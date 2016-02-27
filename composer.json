@@ -1,0 +1,20 @@
+{
+	"name": "zhaofengli/jerabot",
+	"description": "ss-panel companion bot for Telegram",
+	"require": {
+		"irazasyed/telegram-bot-sdk": "^2.0",
+		"ulrichsg/getopt-php": "2.3.*"
+	},
+	"license": "BSD-2-Clause",
+	"authors": [
+		{
+			"name": "Zhaofeng Li",
+			"email": "hello@zhaofeng.li"
+		}
+	],
+	"autoload": {
+		"psr-0": {
+			"Feng": "src/"
+		}
+	}
+}
