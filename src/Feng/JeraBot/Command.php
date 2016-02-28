@@ -53,7 +53,7 @@ abstract class Command extends VanillaCommand {
 	/**
 	 * Options this command expects/accepts
 	 */
-	public $options = "";
+	protected $options = "";
 
 	/**
 	 * The Bot object
@@ -111,7 +111,8 @@ abstract class Command extends VanillaCommand {
 	public function getGetopt() {
 		$getopt = new Getopt( $this->options );
 		try {
-			$getopt->parse( $this->arguments );
+			$arg = str_replace( "—", "--", $this->arguments );
+			$getopt->parse( $arg );
 		} catch ( \Exception $e ) {
 			// Do nothing for now, leave the command unparsed
 			// FIXME: Properly notify the caller about the error
@@ -144,6 +145,24 @@ abstract class Command extends VanillaCommand {
 			}
 		}
 		return false; // Sender cannot be determined
+	}
+
+	/**
+	 * Get required access level
+	 *
+	 * @return int
+	 */
+	public function getAccess() {
+		return $this->access;
+	}
+
+	/**
+	 * Get options
+	 *
+	 * @return array|string
+	 */
+	public function getOptions() {
+		return $this->options;
 	}
 
 	/**
