@@ -110,7 +110,12 @@ abstract class Command extends VanillaCommand {
 	 */
 	public function getGetopt() {
 		$getopt = new Getopt( $this->options );
-		$getopt->parse( $this->arguments );
+		try {
+			$getopt->parse( $this->arguments );
+		} catch ( \Exception $e ) {
+			// Do nothing for now, leave the command unparsed
+			// FIXME: Properly notify the caller about the error
+		}
 		return $getopt;
 	}
 
