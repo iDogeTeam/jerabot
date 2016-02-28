@@ -8,6 +8,7 @@ $config = array(
 	"developers" => array(),
 	"bootstrap" => "The path of ss-panel's bootstrap file",
 	"commands" => array(
+		"\\Feng\\JeraBot\\Commands\\StartCommand",
 		"\\Feng\\JeraBot\\Commands\\HelpCommand",
 		"\\Feng\\JeraBot\\Commands\\MyidCommand",
 		"\\Feng\\JeraBot\\Commands\\MyinfoCommand",
