@@ -67,6 +67,7 @@ class AssocCommand extends Command {
 				return;
 			}
 			$bridge = new PanelBridge();
+			if ( empty( $arguments ) ) return;
 			if ( $user = $bridge->getUserByTelegramToken( $arguments ) ) {
 				if ( $user->telegram_id ) {
 					$this->replyWithMessage( array(
