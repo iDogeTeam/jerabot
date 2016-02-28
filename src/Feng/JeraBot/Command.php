@@ -120,7 +120,9 @@ abstract class Command extends VanillaCommand {
 	 * @return Getopt
 	 */
 	public function getGetopt() {
-		return new Getopt( $this->options );
+		$getopt = new Getopt( $this->options );
+		$getopt->parse( $this->arguments );
+		return $getopt;
 	}
 
 	/**
