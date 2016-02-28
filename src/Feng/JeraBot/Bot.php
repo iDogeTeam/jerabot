@@ -91,6 +91,7 @@ class Bot {
 
 	protected function initializeCommands() {
 		$commands = array(
+			"\\Feng\\JeraBot\\Commands\\HelpCommand",
 			"\\Feng\\JeraBot\\Commands\\MyidCommand",
 			"\\Feng\\JeraBot\\Commands\\MyinfoCommand",
 			"\\Feng\\JeraBot\\Commands\\StatsCommand",
