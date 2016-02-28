@@ -7,6 +7,13 @@ $config = array(
 	"admins" => array( "Put ops' IDs in this array" ),
 	"developers" => array(),
 	"bootstrap" => "The path of ss-panel's bootstrap file",
+	"commands" => array(
+		"\\Feng\\JeraBot\\Commands\\HelpCommand",
+		"\\Feng\\JeraBot\\Commands\\MyidCommand",
+		"\\Feng\\JeraBot\\Commands\\MyinfoCommand",
+		"\\Feng\\JeraBot\\Commands\\StatsCommand",
+		"\\Feng\\JeraBot\\Commands\\CheckinCommand"
+	),
 );
 
 @include( __DIR__ . "/config.php" );

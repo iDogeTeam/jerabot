@@ -90,13 +90,7 @@ class Bot {
 	}
 
 	protected function initializeCommands() {
-		$commands = array(
-			"\\Feng\\JeraBot\\Commands\\HelpCommand",
-			"\\Feng\\JeraBot\\Commands\\MyidCommand",
-			"\\Feng\\JeraBot\\Commands\\MyinfoCommand",
-			"\\Feng\\JeraBot\\Commands\\StatsCommand",
-			"\\Feng\\JeraBot\\Commands\\CheckinCommand"
-		);
+		$commands = $this->getConfig( "commands" );
 		foreach ( $commands as $command ) {
 			$o = new $command();
 			$o->bot = &$this;
