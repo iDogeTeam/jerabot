@@ -12,7 +12,8 @@ $config = array(
 		"\\Feng\\JeraBot\\Commands\\MyidCommand",
 		"\\Feng\\JeraBot\\Commands\\MyinfoCommand",
 		"\\Feng\\JeraBot\\Commands\\StatsCommand",
-		"\\Feng\\JeraBot\\Commands\\CheckinCommand"
+		"\\Feng\\JeraBot\\Commands\\CheckinCommand",
+		"\\Feng\\JeraBot\\Commands\\AssocCommand",
 	),
 );
 
