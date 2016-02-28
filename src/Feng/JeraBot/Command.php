@@ -25,6 +25,7 @@ namespace Feng\JeraBot;
 
 use Feng\JeraBot\Access;
 use Feng\JeraBot\Bot;
+use Feng\JeraBot\PanelBridge;
 use Telegram\Bot\Api;
 use Telegram\Bot\Objects\Update;
 use Telegram\Bot\Commands\Command as VanillaCommand;
@@ -120,5 +121,32 @@ abstract class Command extends VanillaCommand {
 	 */
 	public function getGetopt() {
 		return new Getopt( $this->options );
+	}
+
+	/**
+	 * Get the User object associated with the sender
+	 *
+	 * This method leverages `PanelBridge`. You should never
+	 * type-hint the returned object as it will be an instance
+	 * of an undetermined class.
+	 *
+	 * `false` is returned when no associated user is found, or
+	 * when there are more than one.
+	 *
+	 * @return object|false
+	 */
+	public function getPanelUser() {
+		if ( null === $this->update ) return false;
+		if ( $user = $this->update->getMessage()->getFrom() ) {
+			$tid = $user->getId();
+			$bridge = new PanelBridge();
+			$users = $bridge->getUsersByTelegramId( $tid );
+			if ( false === $users || 1 < $users->count() ) {
+				return false;
+			} else {
+				return $users->get()->first();
+			}
+		}
+		return false; // Sender cannot be determined
 	}
 }
