@@ -80,18 +80,7 @@ abstract class Command extends VanillaCommand {
 		if ( $access >= $this->access ) {
 			// Access granted!
 			if ( $this->autoHelp && "--help" == $arguments ) {
-				// Generate usage information
-				// TODO: Implement php-getopt support
-				if ( !empty( $this->description ) ) {
-					$help = $this->name . ": " . $this->description;
-				} else {
-					$help = $this->name . ": " . "_貌似我也不知道这玩意到底做什么的（捂脸_";
-				}
-				$telegram->sendMessage( array(
-					"chat_id" => $update->getMessage()->getChat()->getId(),
-					"text" => $help,
-					"parse_mode" => "Markdown"
-				) );
+				return $this->sendHelp( $telegram, $arguments, $update );
 			} else {
 				return parent::make( $telegram, $arguments, $update );
 			}
@@ -150,5 +139,34 @@ abstract class Command extends VanillaCommand {
 			}
 		}
 		return false; // Sender cannot be determined
+	}
+
+	/**
+	 * Send help information to the sender
+	 *
+	 * @param Api $telegram
+	 * @param string $arguments
+	 * @param Update $update
+	 *
+	 * @return mixed
+	 */
+	private function sendHelp( $telegram, $arguments, $update ) {
+		// Generate usage information
+		$banner = "/" . $this->name;
+		if ( !empty( $this->description ) ) {
+			$banner .= ": " . $this->description;
+		}
+		if ( !empty( $this->options ) ) {
+			$getopt = $this->getGetopt();
+			$getopt->setBanner( $banner  . "\r\n" );
+			$help = $getopt->getHelpText();
+		} else {
+			$help = $banner;
+		}
+		$telegram->sendMessage( array(
+			"chat_id" => $update->getMessage()->getChat()->getId(),
+			"text" => $help,
+			"parse_mode" => "Markdown"
+		) );
 	}
 }
