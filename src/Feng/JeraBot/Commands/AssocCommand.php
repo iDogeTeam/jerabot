@@ -36,6 +36,8 @@ class AssocCommand extends Command {
 
 	protected $access = Access::EVERYONE;
 
+	protected $hidden = true;
+
 	public function __construct() {
 		$this->options = array(
 			( new GetoptOption( null, "remove" ) )
