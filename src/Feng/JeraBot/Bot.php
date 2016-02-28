@@ -93,7 +93,8 @@ class Bot {
 		$commands = array(
 			"\\Feng\\JeraBot\\Commands\\MyidCommand",
 			"\\Feng\\JeraBot\\Commands\\MyinfoCommand",
-			"\\Feng\\JeraBot\\Commands\\StatsCommand"
+			"\\Feng\\JeraBot\\Commands\\StatsCommand",
+			"\\Feng\\JeraBot\\Commands\\CheckinCommand"
 		);
 		foreach ( $commands as $command ) {
 			$o = new $command();
