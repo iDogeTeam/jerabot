@@ -59,7 +59,7 @@ class HelpCommand extends Command {
 			$access = $altaccess;
 		}
 		$commands = $this->telegram->getCommands();
-		$response = "";
+		$response = "*可用命令*\r\n";
 		foreach ( $commands as $name => $command ) {
 			if ( $access >= $command->getAccess() ) {
 				if ( $command->isHidden() && !$getopt->getOption( "all" ) ) continue;
@@ -71,7 +71,8 @@ class HelpCommand extends Command {
 			}
 		}
 		$this->replyWithMessage( array(
-			"text" => $response
+			"text" => $response,
+			"parse_mode" => "Markdown"
 		) );
 	}
 }
