@@ -43,5 +43,9 @@ class PanelBridge {
 		if ( $users->count() == 0) return false;
 		else return $users;
 	}
+
+	public function mbToBytes( $mb ) {
+		return Tools::toMB( $mb ); // What a misleading name :P
+	}
 }
 
