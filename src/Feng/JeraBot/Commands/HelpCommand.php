@@ -38,8 +38,10 @@ class HelpCommand extends Command {
 
 	public function __construct() {
 		$this->options = array(
-			( new GetoptOption( "a", "access", Getopt::REQUIRED_ARGUMENT ) )
-				->setDescription( "只显示指定的权限可用的命令" )
+			( new GetoptOption( "l", "access", Getopt::REQUIRED_ARGUMENT ) )
+				->setDescription( "只显示指定的权限可用的命令" ),
+			( new GetoptOption( "a", "all", Getopt::NO_ARGUMENT ) )
+				->setDescription( "显示隐藏的命令" ),
 		);
 	}
 
@@ -60,6 +62,7 @@ class HelpCommand extends Command {
 		$response = "";
 		foreach ( $commands as $name => $command ) {
 			if ( $access >= $command->getAccess() ) {
+				if ( $command->isHidden() && !$getopt->getOption( "all" ) ) continue;
 				$response .= sprintf(
 					"/%s: %s\r\n",
 					$name,

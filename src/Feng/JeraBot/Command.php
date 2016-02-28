@@ -56,6 +56,13 @@ abstract class Command extends VanillaCommand {
 	protected $options = "";
 
 	/**
+	 * Whether this command is hidden or not
+	 *
+	 * @var bool
+	 */
+	protected $hidden = false;
+
+	/**
 	 * The Bot object
 	 *
 	 * @var Bot
@@ -163,6 +170,15 @@ abstract class Command extends VanillaCommand {
 	 */
 	public function getOptions() {
 		return $this->options;
+	}
+
+	/**
+	 * Get visibility
+	 *
+	 * @return bool
+	 */
+	public function isHidden() {
+		return $this->hidden;
 	}
 
 	/**
