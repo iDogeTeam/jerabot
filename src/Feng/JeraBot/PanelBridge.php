@@ -56,5 +56,12 @@ class PanelBridge {
 	public function mbToBytes( $mb ) {
 		return Tools::toMB( $mb ); // What a misleading name :P
 	}
+
+	public function getModel( $type ) {
+		switch ( $type ) {
+			case "User": return "App\\Models\\User";
+			default: return false;
+		}
+	}
 }
 
