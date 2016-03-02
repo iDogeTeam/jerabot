@@ -16,6 +16,7 @@ $config = array(
 		"\\Feng\\JeraBot\\Commands\\CheckinCommand",
 		"\\Feng\\JeraBot\\Commands\\AssocCommand",
 		"\\Feng\\JeraBot\\Commands\\FindCommand",
+		"\\Feng\\JeraBot\\Commands\\KdCommand",
 	),
 );
 

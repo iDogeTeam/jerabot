@@ -9,7 +9,8 @@
 	],
 	"require": {
 		"irazasyed/telegram-bot-sdk": "^2.0",
-		"nategood/commando": "dev-zhaofengli"
+		"nategood/commando": "dev-zhaofengli",
+		"rmccue/requests": ">=1.0"
 	},
 	"license": "BSD-2-Clause",
 	"authors": [

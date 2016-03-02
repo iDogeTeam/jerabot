@@ -88,6 +88,10 @@ class Bot {
 		return Access::EVERYONE;
 
 	}
+	
+	public function getConfig( $key ) {
+		return $this->config[$key];
+	}
 
 	protected function initializeCommands() {
 		$commands = $this->getConfig( "commands" );
@@ -96,9 +100,5 @@ class Bot {
 			$o->bot = &$this;
 			$this->api->addCommand( $o );
 		}
-	}
-	
-	protected function getConfig( $key ) {
-		return $this->config[$key];
 	}
 }
