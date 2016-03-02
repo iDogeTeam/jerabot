@@ -23,11 +23,11 @@
 
 namespace Feng\JeraBot;
 
+use Feng\JeraBot\Command;
 use Feng\JeraBot\PanelBridge;
-use Ulrichsg\Getopt\Getopt;
-use Ulrichsg\Getopt\Option as GetoptOption;
 
 class FindEngine {
+	protected $type = "user";
 	protected $types = array(
 		"user" => array(
 			"model" => "User",
@@ -66,21 +66,24 @@ class FindEngine {
 		),
 	);
 
-	protected $extraOptions = array();
+	protected $command = null;
 
-	public function __construct() {
+	public function __construct( $type = "user", Command &$command ) {
+		if ( !isset( $this->types[$type] ) ) {
+			throw new \InvalidArgumentException( "No such type: $type" );
+			return false;
+		}
+		$this->type = $type;
+		$this->command = &$command;
 	}
 
-	public function runQuery( $type, $arguments ) {
-		$options = $this->buildOptions( $type );
+	public function runQuery() {
 		$bridge = new PanelBridge();
-		$t = $this->types[$type];
+		$t = $this->types[$this->type];
 		$model = $bridge->getModel( $t['model'] );
 		$results = null;
-		$getopt = new GetOpt( $options );
-		$getopt->parse( $arguments );
 		foreach ( $t['properties'] as $field => $details ) {
-			$criterion = $getopt->getOption( $details['long'] );
+			$criterion = $this->command->getOption( $details['long'] );
 			if ( null !== $criterion ) {
 				if ( null === $results ) {
 					// first criterion
@@ -106,28 +109,17 @@ class FindEngine {
 		}
 	}
 
-	public function addOptions( $options ) {
-		$this->extraOptions = array_merge( $this->extraOptions, $options );
-	}
-
-	public function buildOptions( $type ) {
-		if ( !isset( $this->types[$type] ) ) {
-			throw new \InvalidArgumentException( "No such type: $type" );
-		}
-		$t = $this->types[$type];
-		$return = array();
+	public function attachOptions() {
+		$t = $this->types[$this->type];
 		foreach ( $t['properties'] as $field => $details ) {
-			$option = new GetoptOption(
-				$details['short'],
-				$details['long'],
-				Getopt::REQUIRED_ARGUMENT
-			);
-			if ( !empty( $details['description'] ) ) {
-				$option->setDescription( $details['description'] );
+			$this->command->addOption( $details['long'] );
+			if ( !empty( $details['short'] ) ) {
+				$this->command->aka( $details['short'] );
 			}
-			$return[] = $option;
+			if ( !empty( $details['description'] ) ) {
+				$this->command->describedAs( $details['description'] );
+			}
 		}
-		$return = array_merge( $return, $this->extraOptions );
-		return $return;
+		return true;
 	}
 }

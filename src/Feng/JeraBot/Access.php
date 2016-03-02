@@ -28,4 +28,11 @@ class Access {
 	const USER = 1;
 	const ADMIN = 2;
 	const DEVELOPER = 3;
+	
+	public static function validateLevel( $level ) {
+		if ( !is_numeric( $level ) ) {
+			return false;
+		}
+		return in_array( (int)$level, array( 0, 1, 2, 3 ) );
+	}
 }

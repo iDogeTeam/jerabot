@@ -26,10 +26,10 @@ namespace Feng\JeraBot;
 use Feng\JeraBot\Access;
 use Feng\JeraBot\Bot;
 use Feng\JeraBot\PanelBridge;
+use Feng\JeraBot\Commando;
 use Telegram\Bot\Api;
 use Telegram\Bot\Objects\Update;
 use Telegram\Bot\Commands\Command as VanillaCommand;
-use Ulrichsg\Getopt\Getopt;
 
 /**
  * The good'ol Command class, with some Doge magic :)
@@ -70,6 +70,36 @@ abstract class Command extends VanillaCommand {
 	public $bot = null;
 
 	/**
+	 * The Commando object
+	 *
+	 * @var Commando
+	 */
+	protected $commando = null;
+
+	public final function __construct() {
+		$this->init();
+	}
+
+	/**
+	 * Initialize the command
+	 *
+	 * Do not initialize the options here, as
+	 * the Commando parser is not available
+	 * yet.
+	 */
+	public function init() {
+	}
+
+	/**
+	 * Initialize the options
+	 *
+	 * This method is called every time
+	 * a user runs a command.
+	 */
+	public function initOptions() {
+	}
+
+	/**
 	 * Process an inbound command
 	 *
 	 * This will check the sender against the access level requirement,
@@ -83,13 +113,35 @@ abstract class Command extends VanillaCommand {
 	 * @return mixed
 	 */
 	public function make( $telegram, $arguments, $update ) {
+		$this->telegram = $telegram;
+		$this->arguments = $arguments;
+		$this->update = $update;
+		$this->commando = new Commando( array() );
+		$this->commando->useDefaultHelp( false );
+		if ( $this->autoHelp ) {
+			$this
+				->addOption( "help" )
+				->describedAs( "显示帮助" )
+				->boolean()
+			;
+		}
+		$this->initOptions();
 		$access = $this->bot->getAccessLevel( $update['message']['from']['id'] );
 		if ( $access >= $this->access ) {
 			// Access granted!
-			if ( $this->autoHelp && "--help" == $arguments ) {
-				return $this->sendHelp( $telegram, $arguments, $update );
+			$argv = explode( " ", $arguments );
+			array_unshift( $argv, $this->name );
+			$this->commando->setTokens( $argv );
+			try {
+				$this->commando->parse();
+			} catch ( \Exception $e ) {
+				$this->parseError( $arguments, $e );
+				return;
+			}
+			if ( $this->autoHelp && $this->getOption( "help" ) ) {
+				return $this->sendHelp( $arguments );
 			} else {
-				return parent::make( $telegram, $arguments, $update );
+				return $this->handle( $arguments );
 			}
 		} else {
 			// Naive!
@@ -111,20 +163,15 @@ abstract class Command extends VanillaCommand {
 	}
 
 	/**
-	 * Get the Getopt.php parser
+	 * Notify the user about a parse error
 	 *
-	 * @return Getopt
+	 * @param string $arguments
+	 * @param \Exception $e
 	 */
-	public function getGetopt() {
-		$getopt = new Getopt( $this->options );
-		try {
-			$arg = str_replace( "—", "--", $this->arguments );
-			$getopt->parse( $arg );
-		} catch ( \Exception $e ) {
-			// Do nothing for now, leave the command unparsed
-			// FIXME: Properly notify the caller about the error
-		}
-		return $getopt;
+	public function parseError( $arguments, $e ) {
+		$this->replyWithMessage( array(
+			"text" => "\xF0\x9F\x98\x93 " . $e->getMessage()
+		) );
 	}
 
 	/**
@@ -164,15 +211,6 @@ abstract class Command extends VanillaCommand {
 	}
 
 	/**
-	 * Get options
-	 *
-	 * @return array|string
-	 */
-	public function getOptions() {
-		return $this->options;
-	}
-
-	/**
 	 * Get visibility
 	 *
 	 * @return bool
@@ -182,29 +220,34 @@ abstract class Command extends VanillaCommand {
 	}
 
 	/**
+	 * Add an option
+	 */
+	public function addOption( $name = "" ) {
+		return $this->commando->option( $name );
+	}
+
+	/**
+	 * Retrieve the value of an option
+	 */
+	public function getOption( $name = "" ) {
+		return $this->commando[$name];
+	}
+
+	/**
 	 * Send help information to the sender
 	 *
-	 * @param Api $telegram
 	 * @param string $arguments
-	 * @param Update $update
 	 *
 	 * @return mixed
 	 */
-	private function sendHelp( $telegram, $arguments, $update ) {
+	private function sendHelp( $arguments ) {
 		// Generate usage information
 		$banner = "/" . $this->name;
 		if ( !empty( $this->description ) ) {
 			$banner .= ": " . $this->description;
 		}
-		if ( !empty( $this->options ) ) {
-			$getopt = $this->getGetopt();
-			$getopt->setBanner( $banner  . "\r\n" );
-			$help = $getopt->getHelpText();
-		} else {
-			$help = $banner;
-		}
-		$telegram->sendMessage( array(
-			"chat_id" => $update->getMessage()->getChat()->getId(),
+		$help = $banner . $this->commando->getHelp();
+		$this->replyWithMessage( array(
 			"text" => $help,
 			"parse_mode" => "Markdown"
 		) );

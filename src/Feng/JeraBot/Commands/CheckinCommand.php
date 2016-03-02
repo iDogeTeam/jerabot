@@ -27,7 +27,6 @@ use Telegram\Bot\Actions;
 use Feng\JeraBot\Command;
 use Feng\JeraBot\Access;
 use Feng\JeraBot\PanelBridge;
-use Ulrichsg\Getopt\Option as GetoptOption;
 
 class CheckinCommand extends Command {
 	protected $name = "checkin";
@@ -36,24 +35,31 @@ class CheckinCommand extends Command {
 
 	protected $access = Access::EVERYONE;
 
-	public function __construct() {
-		$this->options = array(
-			( new GetoptOption( null, "nonext" ) )
-				->setDescription( "不抽取下月流量" ),
-			( new GetoptOption( "i", "ingress" ) )
-				->setDescription( "脑洞模式" ),
-			( new GetoptOption( null, "mh" ) )
-				->setDescription( "使用 Multi-hack" ),
-			( new GetoptOption( null, "fracker" ) )
-				->setDescription( "使用 Doge Fracker" ),
-		);
+	public function initOptions() {
+		$this
+			->addOption( "nonext" )
+			->describedAs( "不抽取下月流量" )
+		;
+		$this
+			->addOption( "ingress" )
+			->aka( "i" )
+			->describedAs( "脑洞模式" )
+		;
+		$this
+			->addOption( "mh" )
+			->aka( "f" )
+			->describedAs( "使用 Multi-hack" )
+		;
+		$this
+			->addOption( "fracker" )
+			->describedAs( "使用 Doge Fracker" )
+		;
 	}
 
 	public function handle( $arguments ) {
-		$getopt = $this->getGetopt();
 		$bridge = new PanelBridge();
-		$ingress = $getopt->getOption( "ingress" ) || $getopt->getOption( "mh" ) || $getopt->getOption( "fracker" );
-		$next = !$getopt->getOption( "nonext" ) && !$getopt->getOption( "fracker" );
+		$ingress = $this->getOption( "ingress" ) || $this->getOption( "mh" ) || $this->getOption( "fracker" );
+		$next = !$this->getOption( "nonext" ) && !$this->getOption( "fracker" );
 		if ( false === $user = $this->getPanelUser() ) {
 			if ( $ingress ) $message = "侦测器已停用：位置信息不准确";
 			else $message = "你还没有绑定 Doge 账户呢！";
@@ -62,13 +68,13 @@ class CheckinCommand extends Command {
 			) );
 			return;
 		}
-		if ( $getopt->getOption( "mh" ) && !$user->is_admin ) {
+		if ( $this->getOption( "mh" ) && !$user->is_admin ) {
 			$this->replyWithMessage( array(
 				"text" => "Hack acquired no items."
 			) );
 			return;
 		}
-		if ( !$user->isAbleToCheckin() && !$getopt->getOption( "mh" ) ) {
+		if ( !$user->isAbleToCheckin() && !$this->getOption( "mh" ) ) {
 			if ( $ingress ) $message = "Portal 被烧毁！重建 Portal 可能需要大量时间。";
 			else $message = "您似乎已经签到过了...";
 			$this->replyWithMessage( array(
@@ -76,7 +82,7 @@ class CheckinCommand extends Command {
 			) );
 			return;
 		}
-		if ( $getopt->getOption( "fracker" ) && 3 > $user->user_type ) {
+		if ( $this->getOption( "fracker" ) && 3 > $user->user_type ) {
 			$this->replyWithMessage( array(
 				"text" => "没有足够的 CMU。"
 			) );
@@ -85,7 +91,7 @@ class CheckinCommand extends Command {
 		$lost = $ingress ? rand( 1, 10 ) : 0;
 		$traffic = rand( $user->getCheckinMin(), $user->getCheckinMax() );
 		$trafficnext = $next ? rand( $user->getCheckinMin(), $user->getCheckinMax() ) / 2 : 0;
-		if ( $getopt->getOption( "fracker" ) ) $traffic *= 2;
+		if ( $this->getOption( "fracker" ) ) $traffic *= 2;
 		if ( $user->transfer_enable <= $bridge->mbToBytes( $lost ) ) {
 			$this->replyWithMessage( array(
 				"text" => "Scanner disabled: Collect more XM"
@@ -95,7 +101,7 @@ class CheckinCommand extends Command {
 		$user->transfer_enable -= $bridge->mbToBytes( $lost );
 		$user->transfer_enable += $bridge->mbToBytes( $traffic );
 		$user->transfer_enable_next += $bridge->mbToBytes( $trafficnext );
-		if ( !$getopt->getOption( "mh" ) ) $user->last_check_in_time = time();
+		if ( !$this->getOption( "mh" ) ) $user->last_check_in_time = time();
 		$user->save();
 		$response = $this->renderResults( $ingress, $lost, $traffic, $trafficnext );
 		$this->replyWithMessage( array(

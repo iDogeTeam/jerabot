@@ -27,7 +27,6 @@ use Telegram\Bot\Actions;
 use Feng\JeraBot\Command;
 use Feng\JeraBot\Access;
 use Feng\JeraBot\PanelBridge;
-use Ulrichsg\Getopt\Option as GetoptOption;
 
 class MyinfoCommand extends Command {
 	protected $name = "myinfo";
@@ -36,15 +35,16 @@ class MyinfoCommand extends Command {
 
 	protected $access = Access::EVERYONE;
 
-	public function __construct() {
-		$this->options = array(
-			( new GetoptOption( null, "privacy" ) )
-				->setDescription( "隐藏私人信息" )
-		);
+	public function initOptions() {
+		$this
+			->addOption( "privacy" )
+			->aka( "p" )
+			->describedAs( "隐藏私人信息"  )
+			->boolean()
+		;
 	}
 
 	public function handle( $arguments ) {
-		$getopt = $this->getGetopt();
 		if ( false === $user = $this->getPanelUser() ) {
 			$this->replyWithMessage( array(
 				"text" => "你还没有绑定 Doge 账户呢！"
@@ -59,7 +59,7 @@ AnyConnect：%s
 EOF;
 		$response = sprintf(
 			$template,
-			$getopt->getOption( 'privacy' ) ? "隐藏" : $user->email,
+			$this->getOption( 'privacy' ) ? "隐藏" : $user->email,
 			$user->ac_enable ? "已开通" : "未开通"
 		);
 

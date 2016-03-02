@@ -27,7 +27,6 @@ use Telegram\Bot\Actions;
 use Feng\JeraBot\Command;
 use Feng\JeraBot\Access;
 use Feng\JeraBot\PanelBridge;
-use Ulrichsg\Getopt\Option as GetoptOption;
 
 class AssocCommand extends Command {
 	protected $name = "assoc";
@@ -38,16 +37,20 @@ class AssocCommand extends Command {
 
 	protected $hidden = true;
 
-	public function __construct() {
-		$this->options = array(
-			( new GetoptOption( null, "remove" ) )
-				->setDescription( "解除关联" )
-		);
+	public function initOptions() {
+		$this
+			->addOption( 0 )
+			->describedAs( "绑定码" )
+		;
+		$this
+			->addOption( "remove" )
+			->describedAs( "解除关联" )
+			->boolean()
+		;
 	}
 
 	public function handle( $arguments ) {
-		$getopt = $this->getGetopt();
-		if ( $getopt->getOption( "remove" ) ) {
+		if ( $this->getOption( "remove" ) ) {
 			// deassociate
 			if ( false === $user = $this->getPanelUser() ) {
 				$this->replyWithMessage( array(
@@ -69,8 +72,9 @@ class AssocCommand extends Command {
 				return;
 			}
 			$bridge = new PanelBridge();
-			if ( empty( $arguments ) ) return;
-			if ( $user = $bridge->getUserByTelegramToken( $arguments ) ) {
+			$code = $this->getOption( 0 );
+			if ( empty( $code ) ) return;
+			if ( $user = $bridge->getUserByTelegramToken( $code ) ) {
 				if ( $user->telegram_id ) {
 					$this->replyWithMessage( array(
 						"text" => "目标用户已被绑定"

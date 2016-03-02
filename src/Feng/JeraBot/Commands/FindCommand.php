@@ -27,7 +27,6 @@ use Telegram\Bot\Actions;
 use Feng\JeraBot\Command;
 use Feng\JeraBot\Access;
 use Feng\JeraBot\FindEngine;
-use Ulrichsg\Getopt\Getopt;
 
 class FindCommand extends Command {
 	protected $name = "find";
@@ -36,13 +35,19 @@ class FindCommand extends Command {
 
 	protected $access = Access::ADMIN;
 
-	public function __construct() {
+	protected $find = null;
+
+	public function init() {
+		$this->find = new FindEngine( "user", $this );
+	}
+
+	public function initOptions() {
+		$this->find->attachOptions();
 	}
 
 	public function handle( $arguments ) {
-		$find = new FindEngine();
 		try {
-			$results = $find->runQuery( "user", $arguments );
+			$results = $this->find->runQuery( "user", $arguments );
 		} catch ( \Exception $e ) {
 			$this->replyWithMessage( array(
 				"text" => "出错了\xF0\x9F\x8C\x9A " . $e->getMessage()

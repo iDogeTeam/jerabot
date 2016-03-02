@@ -1,9 +1,15 @@
 {
 	"name": "zhaofengli/jerabot",
 	"description": "ss-panel companion bot for Telegram",
+	"repositories": [
+		{
+			"type": "vcs",
+			"url": "https://github.com/zhaofengli/commando"
+		}
+	],
 	"require": {
 		"irazasyed/telegram-bot-sdk": "^2.0",
-		"ulrichsg/getopt-php": "2.3.*"
+		"nategood/commando": "dev-zhaofengli"
 	},
 	"license": "BSD-2-Clause",
 	"authors": [
