@@ -39,20 +39,24 @@ class CheckinCommand extends Command {
 		$this
 			->addOption( "nonext" )
 			->describedAs( "不抽取下月流量" )
+			->boolean()
 		;
 		$this
 			->addOption( "ingress" )
 			->aka( "i" )
 			->describedAs( "脑洞模式" )
+			->boolean()
 		;
 		$this
 			->addOption( "mh" )
 			->aka( "f" )
 			->describedAs( "使用 Multi-hack" )
+			->boolean()
 		;
 		$this
 			->addOption( "fracker" )
 			->describedAs( "使用 Doge Fracker" )
+			->boolean()
 		;
 	}
 
