@@ -113,12 +113,12 @@ class FindEngine {
 	public function attachOptions() {
 		$t = $this->types[$this->type];
 		foreach ( $t['properties'] as $field => $details ) {
-			$this->command->addOption( $details['long'] );
+			$fluent = &$this->command->addOption( $details['long'] );
 			if ( !empty( $details['short'] ) ) {
-				$this->command->aka( $details['short'] );
+				$fluent = &$fluent->aka( $details['short'] );
 			}
 			if ( !empty( $details['description'] ) ) {
-				$this->command->describedAs( $details['description'] );
+				$fluent = &$fluent->describedAs( $details['description'] );
 			}
 		}
 		return true;
