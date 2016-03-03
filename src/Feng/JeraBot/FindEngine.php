@@ -67,6 +67,7 @@ class FindEngine {
 	);
 
 	protected $command = null;
+	protected $bridge = null;
 
 	public function __construct( $type = "user", Command &$command ) {
 		if ( !isset( $this->types[$type] ) ) {
@@ -75,12 +76,12 @@ class FindEngine {
 		}
 		$this->type = $type;
 		$this->command = &$command;
+		$this->bridge = new PanelBridge();
 	}
 
 	public function runQuery() {
-		$bridge = new PanelBridge();
 		$t = $this->types[$this->type];
-		$model = $bridge->getModel( $t['model'] );
+		$model = $this->bridge->getModel( $t['model'] );
 		$results = null;
 		foreach ( $t['properties'] as $field => $details ) {
 			$criterion = $this->command->getOption( $details['long'] );
@@ -121,5 +122,9 @@ class FindEngine {
 			}
 		}
 		return true;
+	}
+
+	public function getPanelBridge() {
+		return $this->bridge;
 	}
 }
