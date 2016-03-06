@@ -247,6 +247,15 @@ abstract class Command extends VanillaCommand {
 	}
 
 	/**
+	 * Get pmOnly
+	 *
+	 * @return bool
+	 */
+	public function isPmOnly() {
+		return $this->pmOnly;
+	}
+
+	/**
 	 * Add an option
 	 */
 	public function addOption( $name = "" ) {
