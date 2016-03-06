@@ -35,6 +35,8 @@ class MyinfoCommand extends Command {
 
 	protected $access = Access::EVERYONE;
 
+	protected $pmOnly = true;
+
 	public function initOptions() {
 		$this
 			->addOption( "privacy" )

@@ -63,6 +63,13 @@ abstract class Command extends VanillaCommand {
 	protected $hidden = false;
 
 	/**
+	 * Whether this command is PM-only or not
+	 *
+	 * @var bool
+	 */
+	protected $pmOnly = false;
+
+	/**
 	 * The Bot object
 	 *
 	 * @var Bot
@@ -129,6 +136,14 @@ abstract class Command extends VanillaCommand {
 		$access = $this->bot->getAccessLevel( $update['message']['from']['id'] );
 		if ( $access >= $this->access ) {
 			// Access granted!
+			if (
+				$this->getUpdate()->getMessage()->getChat()->getId() !=
+				$this->getUpdate()->getMessage()->getFrom()->getId()
+			) {
+				if ( $this->isPmOnly() ) {
+					return $this->pmOnlyError( $arguments );
+				}
+			}
 			$argv = explode( " ", $arguments );
 			array_unshift( $argv, $this->name );
 			$this->commando->setTokens( $argv );
@@ -173,6 +188,18 @@ abstract class Command extends VanillaCommand {
 			"text" => "\xF0\x9F\x98\x93 " . $e->getMessage()
 		) );
 	}
+
+	/**
+	 * Notify the user that the command is PM-only
+	 *
+	 * @param string $arguments
+	 */
+	public function pmOnlyError( $arguments ) {
+		$this->replyWithMessage( array(
+			"text" => "请在私聊中使用该命令	\xF0\x9F\x98\x87"
+		) );
+	}
+
 
 	/**
 	 * Get the User object associated with the sender

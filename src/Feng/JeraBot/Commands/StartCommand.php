@@ -36,6 +36,8 @@ class StartCommand extends Command {
 
 	protected $hidden = true;
 
+	protected $pmOnly = true;
+
 	public function handle( $arguments ) {
 		if ( !empty( $arguments ) && !$this->getPanelUser() ) {
 			$this->triggerCommand( "assoc" );

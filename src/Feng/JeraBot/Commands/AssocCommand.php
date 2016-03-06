@@ -37,6 +37,8 @@ class AssocCommand extends Command {
 
 	protected $hidden = true;
 
+	protected $pmOnly = true;
+
 	public function initOptions() {
 		$this
 			->addOption( 0 )
