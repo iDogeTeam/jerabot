@@ -53,17 +53,34 @@ class MyinfoCommand extends Command {
 			) );
 			return;
 		}
+		$privacy = $this->getOption( 'privacy' );
 		$template = <<<EOF
-*账户信息*
-绑定邮箱：`%s`
-AnyConnect：%s
-[更多信息](https://dogespeed.ga/user/profile)
+*Shadowsocks*
+端口：`%u`
+密钥：`%s`
+已用流量/总流量：%s
+
 EOF;
 		$response = sprintf(
 			$template,
-			$this->getOption( 'privacy' ) ? "隐藏" : $user->email,
-			$user->ac_enable ? "已开通" : "未开通"
+			$privacy ? "隐藏" : $user->port,
+			$privacy ? "隐藏" : $user->passwd,
+			$user->usedTraffic() . "/" . $user->enableTraffic()
 		);
+		if ( $user->ac_enable ) {
+			$template = <<<EOF
+*AnyConnect*
+用户名：`%s`
+密码：`%s`
+
+EOF;
+			$response .= sprintf(
+				$template,
+				$privacy ? "隐藏" : $user->ac_user_name,
+				$privacy ? "隐藏" : $user->ac_passwd
+			);
+		}
+		$response .= "\r\n[更多信息](https://dogespeed.ga/user/)";
 
 		$this->replyWithMessage( array(
 			"text" => $response,
