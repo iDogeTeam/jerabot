@@ -139,7 +139,7 @@ class Bot {
 	protected function initializeLogger() {
 		// Initialize handlers
 		$this->loggerHandlers = array();
-		$stdout = new StreamHandler( "php://stdout", Logger::DEBUG );
+		$stdout = new StreamHandler( "php://stdout", Logger::INFO );
 		$stdout->setFormatter( new ColoredLineFormatter() );
 		$this->loggerHandlers[] = $stdout;
 		$telegram = new TelegramHandler( $this, Logger::INFO );
