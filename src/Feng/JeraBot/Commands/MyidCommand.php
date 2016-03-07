@@ -34,10 +34,26 @@ class MyidCommand extends Command {
 
 	protected $access = Access::EVERYONE;
 
+	public function initOptions() {
+		$this
+			->addOption( "chatid" )
+			->aka( "c" )
+			->boolean()
+			->describedAs( "显示会话 ID" )
+		;
+	}
+
 	public function handle( $arguments ) {
-		$id = $this->getUpdate()['message']['from']['id'];
+		$message = $this->getUpdate()->getMessage();
+		$fromId = $message->getFrom()->getId();
+		$chatId = $message->getChat()->getId();
+		$response = "你的 Telegram ID：`$fromId`";
+		if ( $this->getOption( "chatid" ) ) {
+			$response .= "\r\n本会话的 ID：`$chatId`";
+		}
 		$this->replyWithMessage( array(
-			"text" => "你的 Telegram ID：" . $id
+			"text" => $response,
+			"parse_mode" => "Markdown"
 		) );
 	}
 }
