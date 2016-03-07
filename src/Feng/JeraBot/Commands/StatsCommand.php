@@ -26,6 +26,7 @@ namespace Feng\JeraBot\Commands;
 use Telegram\Bot\Actions;
 use Feng\JeraBot\Command;
 use Feng\JeraBot\Access;
+use Feng\JeraBot\Utils;
 use Feng\JeraBot\PanelBridge;
 
 class StatsCommand extends Command {
@@ -35,12 +36,23 @@ class StatsCommand extends Command {
 
 	protected $access = Access::ADMIN;
 
+	protected $bridge = null;
+	protected $tickInterval = 10;
+	protected $tickTimestamp = 0;
+	protected $prevTraffic = false;
+	protected $curTraffic = false;
+	protected $speed = 0;
+
+	public function init() {
+		$this->bridge = new PanelBridge();
+	}
+
 	public function handle( $arguments ) {
-		$bridge = new PanelBridge();
-		$sts = $bridge->getAnalytics();
+		$sts = $this->bridge->getAnalytics();
 		$template = <<<EOF
 *DogeSpeed 状态*
 共有 %u 位用户，其中 %u 位在线。共产生了 %s 流量。
+瞬时速度：%s
 
 *JeraBot 状态*
 表示存活～貌似吃掉了 %u 字节的内存（好吃！
@@ -50,11 +62,44 @@ EOF;
 			$sts->getTotalUser(),
 			$sts->getOnlineUser( 3600 ),
 			$sts->getTrafficUsage(),
+			$this->getSpeed(),
 			memory_get_usage(true)
 		);
 		$this->replyWithMessage( array(
 			"text" => $response,
 			"parse_mode" => "Markdown"
 		) );
+	}
+
+	public function tick() {
+		if ( time() < $this->tickTimestamp + $this->tickInterval ) return;
+		$this->prevTraffic = $this->curTraffic;
+		$this->curTraffic = $this->getTotalTraffic();
+		if ( false === $this->prevTraffic ) {
+			$this->prevTraffic = $this->curTraffic;
+		}
+		$this->logger->addDebug( "prev: {$this->prevTraffic} cur: {$this->curTraffic}" );
+		$this->tickTimestamp = time();
+	}
+
+	protected function getSpeed() {
+		$delta = $this->curTraffic - $this->prevTraffic;
+		$pdelta = $delta / $this->tickInterval;
+		return Utils::formatBytes( $pdelta ) . "/s";
+	}
+
+	protected function getTotalTraffic() {
+		$fields = array( "u", "d" );
+		$bytes = 0;
+		foreach ( $fields as $field ) {
+			$bytes += call_user_func(
+				array(
+					$this->bridge->getModel( "User" ),
+					"sum"
+				),
+				$field
+			);
+		}
+		return $bytes;
 	}
 }
