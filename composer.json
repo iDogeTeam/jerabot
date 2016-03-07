@@ -10,7 +10,9 @@
 	"require": {
 		"irazasyed/telegram-bot-sdk": "^2.0",
 		"nategood/commando": "dev-zhaofengli",
-		"rmccue/requests": ">=1.0"
+		"rmccue/requests": ">=1.0",
+		"monolog/monolog": "^1.18",
+		"bramus/monolog-colored-line-formatter": "~2.0"
 	},
 	"license": "BSD-2-Clause",
 	"authors": [

@@ -27,9 +27,17 @@ namespace Feng\JeraBot;
 use Telegram\Bot\Api;
 use Telegram\Bot\Objects\Update;
 
+// Logger
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+use Feng\JeraBot\Monolog\TelegramHandler;
+use Bramus\Monolog\Formatter\ColoredLineFormatter;
+
 class Bot {
 	protected $api = null;
 	protected $apiOffset = 0;
+	protected $logger = null;
+	protected $loggerHandlers = array();
 	protected $config = array();
 	protected $status = array(
 		"users" => array(),
@@ -39,6 +47,7 @@ class Bot {
 	public function __construct( $config ) {
 		$this->config = $config;
 		$this->api = new Api( $this->getConfig( "key" ) );
+		$this->initializeLogger();
 		$this->initializeCommands();
 		$this->loadStatus();
 	}
@@ -93,12 +102,42 @@ class Bot {
 		return $this->config[$key];
 	}
 
+	public function getApi() {
+		return $this->api;
+	}
+
+	public function getLogger( $channel = "" ) {
+		if ( empty( $channel ) ) {
+			return $this->logger;
+		} else {
+			$logger = new Logger( $channel );
+			foreach ( $this->loggerHandlers as $handler ) {
+				$logger->pushHandler( $handler );
+			}
+			return $logger;
+		}
+	}
+
+
 	protected function initializeCommands() {
 		$commands = $this->getConfig( "commands" );
 		foreach ( $commands as $command ) {
-			$o = new $command();
-			$o->bot = &$this;
+			$o = new $command( $this );
 			$this->api->addCommand( $o );
 		}
+	}
+
+	protected function initializeLogger() {
+		// Initialize handlers
+		$this->loggerHandlers = array();
+		$stdout = new StreamHandler( "php://stdout", Logger::DEBUG );
+		$stdout->setFormatter( new ColoredLineFormatter() );
+		$this->loggerHandlers[] = $stdout;
+		$telegram = new TelegramHandler( $this, Logger::INFO );
+		$this->loggerHandlers[] = $telegram;
+
+		// Initialize Logger
+		$this->logger = $this->getLogger( "Bot" );
+		$this->logger->addDebug( "Logger initialized! " );
 	}
 }

@@ -52,6 +52,7 @@ class AssocCommand extends Command {
 	}
 
 	public function handle( $arguments ) {
+		$tid = $this->getUpdate()->getMessage()->getFrom()->getId();
 		if ( $this->getOption( "remove" ) ) {
 			// deassociate
 			if ( false === $user = $this->getPanelUser() ) {
@@ -62,6 +63,7 @@ class AssocCommand extends Command {
 			}
 			$user->telegram_id = 0;
 			$user->save();
+			$this->logger->addInfo( "解除关联：Doge {$user->id} <-X-> Telegram $tid" );
 			$this->replyWithMessage( array(
 				"text" => "GG！成功解除关联"
 			) );
@@ -83,9 +85,10 @@ class AssocCommand extends Command {
 					) );
 					return;
 				}
-				$user->telegram_id = $this->getUpdate()->getMessage()->getFrom()->getId();
+				$user->telegram_id = $tid;
 				$user->telegram_token = "";
 				$user->save();
+				$this->logger->addInfo( "关联：Doge {$user->id} <---> Telegram $tid" );
 				$this->replyWithMessage( array(
 					"text" => "绑定成功！\xF0\x9F\x99\x8C"
 				) );

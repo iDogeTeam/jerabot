@@ -10,6 +10,6 @@ if ( !$bot->sanityCheck() ) {
 	echo "Bad API key.\n";
 	exit;
 }
-echo "API key okay! Starting...\n";
+$bot->getLogger()->addInfo( "API key okay! Hello, world!" );
 $bot->run();
 

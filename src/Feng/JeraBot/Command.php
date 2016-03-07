@@ -83,8 +83,19 @@ abstract class Command extends VanillaCommand {
 	 */
 	protected $commando = null;
 
-	public final function __construct() {
+	/**
+	 * The Logger object
+	 *
+	 * @var Logger
+	 */
+	protected $logger = null;
+
+	public final function __construct( Bot &$bot ) {
+		$this->bot = &$bot;
+		$reflection = new \ReflectionClass( $this );
+		$this->logger = $this->bot->getLogger( $reflection->getShortName() );
 		$this->init();
+		$this->logger->addDebug( "Initialized" );
 	}
 
 	/**
@@ -156,7 +167,11 @@ abstract class Command extends VanillaCommand {
 			if ( $this->autoHelp && $this->getOption( "help" ) ) {
 				return $this->sendHelp( $arguments );
 			} else {
-				return $this->handle( $arguments );
+				try {
+					return $this->handle( $arguments );
+				} catch ( \Exception $e ) {
+					$this->logger->addCritical( $e );
+				}
 			}
 		} else {
 			// Naive!
