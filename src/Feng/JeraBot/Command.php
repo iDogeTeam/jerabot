@@ -218,6 +218,12 @@ abstract class Command extends VanillaCommand {
 		) );
 	}
 
+	/**
+	 * Tick tock tick tock...
+	 */
+	public function tick() {
+	}
+
 
 	/**
 	 * Get the User object associated with the sender

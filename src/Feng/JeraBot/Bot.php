@@ -76,6 +76,15 @@ class Bot {
 	public function run() {
 		for ( ; ; ) {
 			$this->api->commandsHandler( false );
+			$this->tick();
+			sleep( 1 );
+		}
+	}
+
+	public function tick() {
+		$commands = $this->api->getCommands();
+		foreach ( $commands as $command ) {
+			$command->tick();
 		}
 	}
 
