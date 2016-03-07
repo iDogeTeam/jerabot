@@ -24,6 +24,7 @@
 namespace Feng\JeraBot;
 
 use Feng\JeraBot\Access;
+use Feng\JeraBot\Utils;
 use Feng\JeraBot\Bot;
 use Feng\JeraBot\PanelBridge;
 use Feng\JeraBot\Commando;
@@ -190,6 +191,8 @@ abstract class Command extends VanillaCommand {
 	public function denied( $arguments ) {
 		// guys where is dat cat pic sending code i cant find it
 		// srsly i need some kitten love after all this dog hassle
+		$formatted = Utils::formatTelegramUser( $this->getUpdate()->getMessage()->getFrom() );
+		$this->logger->addWarning( "药丸，权限不够：" . $formatted );
 	}
 
 	/**
