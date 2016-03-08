@@ -6,7 +6,7 @@ $config = array(
 	"key" => "Put Telegram Bot API key here",
 	"admins" => array( "Put ops' IDs in this array" ),
 	"developers" => array(),
-	"bootstrap" => "The path of ss-panel's bootstrap file",
+	"bootstrap" => "",
 	"commands" => array(
 		"\\Feng\\JeraBot\\Commands\\StartCommand",
 		"\\Feng\\JeraBot\\Commands\\HelpCommand",
