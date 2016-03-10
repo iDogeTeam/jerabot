@@ -80,11 +80,14 @@ class CheckinCommand extends Command {
 		}
 		if ( !$user->isAbleToCheckin() && !$this->getOption( "mh" ) ) {
 			$last = $user->lastCheckInTime();
-			if ( $ingress ) $message = "*(-i 在普通签到时加入有惊喜)* Portal 被烧毁！重建 Portal 可能需要大量时间。";
-			else $message .= "您似乎已经签到过了...";
-				 $message .= "\r\n上一次的签到时间: $last ";
+			if ( $ingress ) {
+				$message = "Portal 被烧毁！重建 Portal 可能需要大量时间。";
+			} else {
+				$message = "您似乎已经签到过了... 上一次签到时间：_{$last}_";
+			}
 			$this->replyWithMessage( array(
-				"text" => $message,";上一次/现在的签到时间:",$last
+				"text" => $message,
+				"parse_mode" => "Markdown"
 			) );
 			return;
 		}
