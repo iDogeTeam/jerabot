@@ -40,14 +40,14 @@ class TelegramHandler extends AbstractProcessingHandler {
 	}
 
 	protected function write( array $record ) {
-		$message = "\xF0\x9F\x93\x93 _{$record['formatted']}_";
+		$message = "\xF0\x9F\x93\x93 " . htmlspecialchars( $record['formatted'] );
 		$chats = $this->getBot()->getConfig( "internalChats" );
 		if ( is_array( $chats ) ) {
 			foreach ( $chats as $chatId ) {
 				$this->getBot()->getApi()->sendMessage( array(
 					"chat_id" => $chatId,
 					"text" => $message,
-					"parse_mode" => "Markdown",
+					"parse_mode" => "HTML",
 
 				) );
 			}
