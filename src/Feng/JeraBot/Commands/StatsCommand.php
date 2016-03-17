@@ -34,7 +34,7 @@ class StatsCommand extends Command {
 
 	protected $description = "看看数字，积累一下成就感（doge脸";
 
-	protected $access = Access::ADMIN;
+	protected $access = Access::EVERYONE;
 
 	protected $bridge = null;
 	protected $tickInterval = 10;
@@ -47,24 +47,44 @@ class StatsCommand extends Command {
 		$this->bridge = new PanelBridge();
 	}
 
+	public function initOptions() {
+		$this
+			->addOption( "all" )
+			->aka( "a" )
+			->describedAs( "显示所有信息" )
+			->boolean()
+		;
+	}
+
 	public function handle( $arguments ) {
+		$tid = $this->getUpdate()->getMessage()->getFrom()->getId();
+		$access = $this->bot->getAccessLevel( $tid );
 		$sts = $this->bridge->getAnalytics();
 		$template = <<<EOF
 *DogeSpeed 状态*
 共有 %u 位用户，其中 %u 位在线。共产生了 %s 流量。
 瞬时速度：%s
 
-*JeraBot 状态*
-表示存活～貌似吃掉了 %u 字节的内存（好吃！
 EOF;
 		$response = sprintf(
 			$template,
 			$sts->getTotalUser(),
 			$sts->getOnlineUser( 3600 ),
 			$sts->getTrafficUsage(),
-			$this->getSpeed(),
-			memory_get_usage(true)
+			$this->getSpeed()
 		);
+		if ( $this->getOption( "all" ) ) {
+			if ( Access::ADMIN <= $access ) {
+				$template = <<<EOF
+*JeraBot 状态*
+表示存活～貌似吃掉了 %u 字节的内存（好吃！
+EOF;
+				$response .= sprintf(
+					$template,
+					memory_get_usage( true )
+				);
+			}
+		}
 		$this->replyWithMessage( array(
 			"text" => $response,
 			"parse_mode" => "Markdown"
