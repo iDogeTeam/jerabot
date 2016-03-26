@@ -47,4 +47,8 @@ class Utils {
 
 		return round( $bytes, $precision ) . ' ' . $units[$pow]; 
 	} 
+
+	public static function startsWith( $haystack, $needle ) {
+		return $needle === "" || strrpos( $haystack, $needle, -strlen( $haystack ) ) !== false;
+	}
 }

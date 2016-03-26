@@ -23,6 +23,7 @@
 
 namespace Feng\JeraBot;
 
+use Feng\JeraBot\Utils;
 use Feng\JeraBot\Command;
 use Feng\JeraBot\PanelBridge;
 
@@ -33,11 +34,13 @@ class FindEngine {
 			"model" => "User",
 			"properties" => array(
 				"id" => array(
+					"numeric" => true,
 					"long" => "id",
 					"short" => null,
 					"description" => "ss-panel ID",
 				),
 				"port" => array(
+					"numeric" => true,
 					"long" => "port",
 					"short" => null,
 					"description" => "端口号",
@@ -53,22 +56,34 @@ class FindEngine {
 					"description" => "自定义加密方式",
 				),
 				"is_admin" => array(
+					"numeric" => true,
 					"long" => "is-admin",
 					"short" => null,
 					"description" => "是否管理员",
 				),
 				"ac_enable" => array(
+					"numeric" => true,
 					"long" => "ac-enable",
 					"short" => null,
 					"description" => "是否开通了 AnyConnect",
 				),
 				"telegram_id" => array(
+					"numeric" => true,
 					"long" => "telegram-id",
 					"short" => null,
 					"description" => "绑定的 Telegram ID",
 				),
 			),
 		),
+	);
+	protected $numericOperators = array(
+		"!=" => "<>",
+		">=" => ">=",
+		"<=" => "<=",
+		"<>" => "<>",
+		">" => ">",
+		"<" => "<",
+		"!" => "<>",
 	);
 
 	protected $command = null;
@@ -91,20 +106,55 @@ class FindEngine {
 		foreach ( $t['properties'] as $field => $details ) {
 			$criterion = $this->command->getOption( $details['long'] );
 			if ( null !== $criterion ) {
-				if ( null === $results ) {
-					// first criterion
-					$results = call_user_func(
-						array( $model, "where" ),
+				if ( "null" == $criterion ) {
+					// value is null
+					$method = "whereNull";
+					$parameters = array(
+						$field
+					);
+				} else if ( "!null" == $criterion ) {
+					// value not null
+					$method = "whereNotNull";
+					$parameters = array(
+						$field
+					);
+				} else if ( $details['numeric'] ) {
+					// numeric property
+					$operator = "=";
+					foreach ( $this->numericOperators as $userOperator => $sqlOperator ) {
+						if ( Utils::startsWith( $criterion, $userOperator ) ) {
+							$operator = $sqlOperator;
+							$criterion = substr( $criterion, strlen( $userOperator ) );
+							break;
+						}
+					}
+					$method = "where";
+					$parameters = array(
+						$field,
+						$operator,
+						$criterion
+					);
+					var_dump( $parameters );
+				} else {
+					// non-numeric property
+					$method = "where";
+					$parameters = array(
 						$field,
 						"=",
 						$criterion
 					);
+				}
+				if ( null === $results ) {
+					// first criterion
+					$results = call_user_func_array(
+						array( $model, $method ),
+						$parameters
+					);
 				} else {
-					$results = $results->where(
-						$field,
-						"=",
-						$criterion
-						);
+					$results = call_user_func_array(
+						array( $results, $method ),
+						$parameters
+					);
 				}
 			}
 		}
