@@ -62,6 +62,11 @@ class FindEngine {
 					"short" => null,
 					"description" => "是否开通了 AnyConnect",
 				),
+				"telegram_id" => array(
+					"long" => "telegram-id",
+					"short" => null,
+					"description" => "绑定的 Telegram ID",
+				),
 			),
 		),
 	);
