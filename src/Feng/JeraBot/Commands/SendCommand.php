@@ -49,11 +49,19 @@ class SendCommand extends Command {
 			->describedAs( "信息" )
 			->required()
 		;
+		$this
+			->addOption( "group" )
+			->aka( "g" )
+			->describedAs( "群" )
+			->boolean()
+		;
 	}
 
 	public function handle( $arguments ) {
+		$id = $this->getOption( 0 );
+		if ( $this->getOption( "group" ) ) $id = -1 * $id;
 		$this->getTelegram()->sendMessage( array(
-			"chat_id" => $this->getOption( 0 ),
+			"chat_id" => $id,
 			"text" => $this->getOption( 1 )
 		) );
 	}
