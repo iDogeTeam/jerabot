@@ -41,6 +41,7 @@ class TelegramHandler extends AbstractProcessingHandler {
 
 	protected function write( array $record ) {
 		$message = "\xF0\x9F\x93\x93 " . htmlspecialchars( $record['formatted'] );
+		if ( strlen( $message ) > 300 ) return -1;
 		$chats = $this->getBot()->getConfig( "internalChats" );
 		if ( is_array( $chats ) ) {
 			foreach ( $chats as $chatId ) {
