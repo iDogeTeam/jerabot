@@ -18,6 +18,8 @@ $config = array(
 		"\\Feng\\JeraBot\\Commands\\FindCommand",
 		"\\Feng\\JeraBot\\Commands\\KdCommand",
 		"\\Feng\\JeraBot\\Commands\\SendCommand",
+		"\\Feng\\JeraBot\\Commands\\AnyConnectCloseCommand",
+		"\\Feng\\JeraBot\\Commands\\AnyConnectCommand",
 	),
 );
 
