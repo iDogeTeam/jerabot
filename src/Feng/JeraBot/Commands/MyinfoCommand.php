@@ -59,20 +59,25 @@ class MyinfoCommand extends Command {
 端口：`%u`
 密钥：`%s`
 已用流量/总流量：%s
+===
+*用户类型*
+Type: %s
+对应的数字为不同组别.(数字越高等级越高)
+===
 
 EOF;
 		$response = sprintf(
 			$template,
 			$privacy ? "隐藏" : $user->port,
 			$privacy ? "隐藏" : $user->passwd,
-			$user->usedTraffic() . "/" . $user->enableTraffic()
+			$user->usedTraffic() . "/" . $user->enableTraffic(),
+			$user->user_type
 		);
 		if ( $user->ac_enable ) {
 			$template = <<<EOF
 *AnyConnect*
 用户名：`%s`
 密码：`%s`
-
 EOF;
 			$response .= sprintf(
 				$template,
