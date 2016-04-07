@@ -34,6 +34,14 @@ class HelpCommand extends Command {
 
 	protected $access = Access::EVERYONE;
 
+	protected $cache = array();
+
+	protected $headings = array(
+		Access::USER => "会员命令",
+		Access::ADMIN => "管理员命令",
+		Access::DEVELOPER => "开发者命令",
+	);
+
 	public function initOptions() {
 		$this
 			->addOption( 0 )
@@ -53,6 +61,12 @@ class HelpCommand extends Command {
 			->describedAs( "显示隐藏的命令" )
 			->boolean()
 		;
+		$this
+			->addOption( "refresh" )
+			->aka( "r" )
+			->describedAs( "刷新命令列表" )
+			->boolean()
+		;
 	}
 
 	public function handle( $arguments ) {
@@ -67,9 +81,13 @@ class HelpCommand extends Command {
 			}
 			$access = $altaccess;
 		}
-		$commands = $this->telegram->getCommands();
+		if ( !$this->buildCache( $this->getOption( "force" ) ) ) {
+			throw new \Exception( "无法构建缓存" );
+		}
+		// Provide help with a specific command
 		$c = $this->getOption( 0 );
 		if ( !empty( $c ) ) {
+			$commands = $this->telegram->getCommands();
 			if ( isset( $commands[$c] ) ) {
 				$this->triggerCommand( $c, "--help" );
 			} else {
@@ -80,20 +98,78 @@ class HelpCommand extends Command {
 			}
 			return;
 		}
-		$response = "*可用命令*\r\n";
-		foreach ( $commands as $name => $command ) {
-			if ( $access >= $command->getAccess() ) {
-				if ( $command->isHidden() && !$this->getOption( "all" ) ) continue;
-				$response .= sprintf(
-					"/%s: %s\r\n",
-					$name,
-					$command->getDescription()
-				);
+		// List available commands
+		$response = "";
+		$list = $this->getOption( "all" ) ? $this->cache['all'] : $this->cache['common'];
+		foreach ( $list as $requiredAccess => $help ) {
+			if ( $access >= $requiredAccess ) {
+				$response .= $help;
 			}
 		}
 		$this->replyWithMessage( array(
 			"text" => $response,
 			"parse_mode" => "Markdown"
 		) );
+	}
+
+	public function buildCache( $forced = false ) {
+		// Check if we need to build the cache
+		if ( !$forced && count( $this->cache ) ) {
+			// Looks like the cache is already built :)
+			return true;
+		}
+
+		// Generate cache structure
+		$cache = array(
+			"common" => array(), // Common commands
+			"all" => array(), // All commands
+		);
+		foreach ( Access::$list as $access ) {
+			$cache['all'][$access] = "";
+			$cache['common'][$access] = "";
+		}
+
+		// Generate help strings
+		$commands = $this->telegram->getCommands();
+		foreach ( $commands as $name => $command ) {
+			// Let's cache pre-formatted strings for performance
+			$access = $command->getAccess();
+			$help = sprintf(
+				"/%s: %s\r\n",
+				$name,
+				$command->getDescription()
+			);
+			if ( !$command->isHidden() ) {
+				$cache['common'][$access] .= $help;
+			}
+			$cache['all'][$access] .= $help;
+		}
+
+		// Generate headings
+		foreach ( Access::$list as $access ) {
+			$heading = $this->getHeading( $access );
+			if ( empty( $heading ) ) {
+				$heading = "";
+			} else {
+				$heading = "**$heading**\r\n";
+			}
+			if ( !empty( $cache['common'][$access] ) ) {
+				$cache['common'][$access] = $heading . $cache['common'][$access] . "\r\n";
+			}
+			if ( !empty( $cache['all'][$access] ) ) {
+				$cache['all'][$access] = $heading . $cache['all'][$access] . "\r\n";
+			}
+		}
+
+		// Cache built!
+		$this->cache = $cache;
+		return true;
+	}
+
+	public function getHeading( $access ) {
+		if ( isset( $this->headings[$access] ) ) {
+			return $this->headings[$access];
+		}
+		return "";
 	}
 }
