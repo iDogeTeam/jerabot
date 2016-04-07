@@ -32,7 +32,7 @@ class SendCommand extends Command {
 
 	protected $description = "发送信息";
 
-	protected $access = Access::ADMIN;
+	protected $access = Access::DEVELOPER;
 
 	protected $hidden = true;
 
