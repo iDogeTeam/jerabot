@@ -28,11 +28,18 @@ class Access {
 	const USER = 1;
 	const ADMIN = 2;
 	const DEVELOPER = 3;
+
+	public static $list = array(
+		self::EVERYONE,
+		self::USER,
+		self::ADMIN,
+		self::DEVELOPER
+	);
 	
 	public static function validateLevel( $level ) {
 		if ( !is_numeric( $level ) ) {
 			return false;
 		}
-		return in_array( (int)$level, array( 0, 1, 2, 3 ) );
+		return in_array( (int)$level, self::$list );
 	}
 }
