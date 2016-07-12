@@ -25,9 +25,11 @@ namespace Feng\JeraBot;
 
 // ss-panel dependencies
 use App\Models\User;
+use App\Models\Node;
 use App\Models\InviteCode;
 use App\Utils\Tools;
 use App\Services\Analytics;
+use App\Utils\Hash;
 
 class PanelBridge {
 	public function __construct() {
@@ -53,13 +55,41 @@ class PanelBridge {
 		}
 	}
 
+    public function gbToBytes( $gb ){
+		return Tools::toGB( $gb );
+	}
+	public function transTraffic( $traffic ){
+		return Tools::flowAutoShow( $traffic );
+	}
+
 	public function mbToBytes( $mb ) {
 		return Tools::toMB( $mb ); // What a misleading name :P
 	}
 
+	public function getNodes(){
+		return Node::whereRaw('type =  1 or type = 2 or type = 3')->orderBy('sort')->get();   //all nodes
+	}
+
+	public function genRandomChar($num){
+		return Tools::genRandomChar($num);
+	}
+	
+	public function getAvailablePort(){
+		return Tools::getAvailablePort();
+	}
+	
+	public function getHash($str){
+		return Hash::passwordHash($str);
+	}
+	
+	public function createUser(){
+		return new User();
+	}
+	
 	public function getModel( $type ) {
 		switch ( $type ) {
 			case "User": return "App\\Models\\User";
+			case "Node": return "App\\Models\\Node";
 			default: return false;
 		}
 	}
