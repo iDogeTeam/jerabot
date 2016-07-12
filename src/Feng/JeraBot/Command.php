@@ -116,6 +116,10 @@ abstract class Command extends VanillaCommand {
 	 * a user runs a command.
 	 */
 	public function initOptions() {
+		public function initOptions() {
+		$this->replyWitChatAction( array(
+			"action" => "typing"
+		) );
 	}
 
 	/**
@@ -133,7 +137,7 @@ abstract class Command extends VanillaCommand {
 	 */
 	public function make( $telegram, $arguments, $update ) {
 		$this->telegram = $telegram;
-		$this->arguments = $arguments;
+		$this->arguments = strtolower($arguments);
 		$this->update = $update;
 		$this->commando = new Commando( array() );
 		$this->commando->useDefaultHelp( false );

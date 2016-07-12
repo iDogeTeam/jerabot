@@ -28,9 +28,9 @@ use Feng\JeraBot\Command;
 use Feng\JeraBot\Access;
 use Feng\JeraBot\FindEngine;
 
-class DataCommand extends Command
+class UsernoteCommand extends Command
 {
-    protected $name = "data";
+    protected $name = "info";
 
     protected $description = "流量管理";
 
@@ -46,25 +46,31 @@ class DataCommand extends Command
     public function initOptions()
     {
         $this->find->attachOptions();
-        $this
-            ->addOption("c")
-            ->describedAs("内容");
 
         $this
             ->addOption("note")
-            ->describedAs("备注")
-            ->boolean();
+            ->describedAs("备注");
+
         $this
             ->addOption("q")
-            ->describedAs("钦点用户")
-            ->boolean();
+            ->describedAs("钦点用户");
+
         $this
             ->addOption("d")
-            ->describedAs("捐赠")
-            ->boolean();
+            ->describedAs("捐赠");
+
+        $this
+            ->addOption("admin")
+            ->describedAs("管理员");
+
         $this
             ->addOption("m")
             ->describedAs("更改")
+            ->boolean();
+
+        $this
+            ->addOption("delete")
+            ->describedAs("删除")
             ->boolean();
     }
 
@@ -85,16 +91,69 @@ class DataCommand extends Command
             ));
             return;
         }
-        $users = $this->find->runQuery();
-        $bridge = $this->find->getPanelBridge();
+
+        global $response;
+        $response = "";
         foreach ($results as $user) {
-            $note = $user->note;
-            $q = $user->is_protected;
-            $d = $user->donate_amount;
-            $c = $this->getOption("c");
-            if ($this->getOption("d")){
-                
+            $note = $this->getOption("note");
+            $q = $this->getOption("q");
+            $d = $this->getOption('d');
+            $admin = $this->getOption("admin");
+            $response .= "钦点用户: ";
+            $response .=  $user->is_protected ? "是" : "否" ;
+            $response .= "\r\n";
+            $response .= "用户等级:" . $user->user_type . "\r\n";
+            $response .= "捐赠金额:" . $user->donate_amount . "\r\n";
+            $response .= "备注:\r\n";
+            $response .= $user->note;
+            $response .= "\r\n";
+            $response .= "端口:" . $user->port . "\r\n";
+            $response .= "邮箱:" . $user->email . "\r\n";
+            $response .= "用户名:" . $user->user_name . "\r\n";
+            $this->replyWithMessage(array(
+                "text" => $response
+            ));
+            $response = ""; //clean
+            //fliter
+            if ($this->getOption("m")) {
+                if ( $this->getOption("note")!= null) {
+                    $user->note = $note;
+                }
+                if ( $this->getOption("d")!= null ) {
+                    $user->donate_amount = $d;
+                }
+                if ( $this->getOption("q")!= null ) {
+                    $user->is_protected = $q;
+                }
+                if ( $this->getOption("admin")!= null ) {
+                    $user->is_admin = $admin;
+                }
+                if ($user->save()) {
+                        $this->replyWithMessage(array(
+                            "text" => "用户更改成功!"
+                        ));
+                    } Else {
+                        $this->replyWithMessage(array(
+                            "text" => "更改失败!"
+                        ));
+                }
             }
-        }
+            //del
+            if ($this->getOption("delete")){
+                if ($user->delete()) {
+                    $this->replyWithMessage(array(
+                        "text" => "用户删除成功!"
+                    ));
+                } Else {
+                    $this->replyWithMessage(array(
+                        "text" => "用户删除失败!"
+                    ));
+                }
+            }
+        usleep(100);
+        }//end of foreach
+        $this->replyWithMessage(array(
+            "text" => "这是结尾!"
+        ));
     }
 }
