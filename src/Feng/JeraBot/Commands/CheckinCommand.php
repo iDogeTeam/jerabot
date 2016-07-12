@@ -79,11 +79,15 @@ class CheckinCommand extends Command {
 			return;
 		}
 		if ( !$user->isAbleToCheckin() && !$this->getOption( "mh" ) ) {
-			$last = $user->lastCheckInTime();
-			if ( $ingress ) {
+			$last = $user->last_check_in_time;
+			$after = strtotime( "+22 hours", $last );
+			$now = strtotime("now");
+			$left_hours = round((($after-$now) / 3600),0, PHP_ROUND_HALF_DOWN)-1;
+			$left_mins = round(((($after-$now) % 3600) / 60),0, PHP_ROUND_HALF_DOWN);
+ 			if ( $ingress ) {
 				$message = "Portal 被烧毁！重建 Portal 可能需要大量时间。";
 			} else {
-				$message = "您似乎已经签到过了... 上一次签到时间：_{$last}_";
+				$message = "您似乎已经签到过了...\r\n距离下一次签到时间还有:\r\n_{$left_hours}_小时, _{$left_mins}_分钟。";
 			}
 			$this->replyWithMessage( array(
 				"text" => $message,
@@ -107,27 +111,30 @@ class CheckinCommand extends Command {
 			) );
 			return;
 		}
+		$username = $user->user_name;
 		$user->transfer_enable -= $bridge->mbToBytes( $lost );
 		$user->transfer_enable += $bridge->mbToBytes( $traffic );
 		$user->transfer_enable_next += $bridge->mbToBytes( $trafficnext );
 		if ( !$this->getOption( "mh" ) ) $user->last_check_in_time = time();
 		$user->save();
-		$response = $this->renderResults( $ingress, $lost, $traffic, $trafficnext );
+		$response = $this->renderResults( $ingress, $lost, $traffic, $trafficnext,$username );
 		$this->replyWithMessage( array(
 			"text" => $response,
 			"parse_mode" => "Markdown"
 		) );
 	}
 
-	protected function renderResults( $ingress, $lost, $traffic, $trafficnext ) {
+	protected function renderResults( $ingress, $lost, $traffic, $trafficnext, $username ) {
 		$response = "";
 		if ( $ingress ) {
+			$response .= "欢迎回来，Agent $username ! \r\n";
 			if ( $lost ) $response .= "*你被击中了，损失 $lost MB!*\r\n";
 			$response .= "Acquired:\r\n";
 			if ( $traffic ) $response .= "*MB* x _{$traffic}_    ";
 			if ( $trafficnext ) $response .= "*MB Next* x _{$trafficnext}_    ";
 			$response .= "\r\n*Portal Key*";
 		} else {
+			$response .= "欢迎回来，亲爱的Doge $username ! \r\n";
 			if ( $lost ) $response .= "损失 $lost MB，";
 			if ( $traffic ) $response .= "获得了本月 $traffic MB 流量";
 			if ( $trafficnext ) $response .= "，下月 $trafficnext MB 流量";

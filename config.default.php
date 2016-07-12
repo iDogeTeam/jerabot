@@ -20,6 +20,14 @@ $config = array(
 		"\\Feng\\JeraBot\\Commands\\SendCommand",
 		"\\Feng\\JeraBot\\Commands\\AnyConnectCloseCommand",
 		"\\Feng\\JeraBot\\Commands\\AnyConnectCommand",
+		"\\Feng\\JeraBot\\Commands\\InviteCodeUserCommand",
+		"\\Feng\\JeraBot\\Commands\\IntroductionCommand",
+		"\\Feng\\JeraBot\\Commands\\UserRightsCommand",
+		"\\Feng\\JeraBot\\Commands\\DataCommand",
+		"\\Feng\\JeraBot\\Commands\\NodeinfoCommand",
+		"\\Feng\\JeraBot\\Commands\\RegCommand",
+		"\\Feng\\JeraBot\\Commands\\ShadowsocksPortChangeCommand"
+		
 	),
 );
 

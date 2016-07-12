@@ -45,6 +45,12 @@ class FindEngine {
 					"short" => null,
 					"description" => "端口号",
 				),
+				"user_name" => array(
+					"numeric" => true,
+					"long" => "user_name",
+					"short" => null,
+					"description" => "昵称",
+				),
 				"email" => array(
 					"long" => "email",
 					"short" => null,
@@ -60,6 +66,12 @@ class FindEngine {
 					"long" => "is-admin",
 					"short" => null,
 					"description" => "是否管理员",
+				),
+		"user_type" => array(
+					"numeric" => true,
+					"long" => "user_type",
+					"short" => null,
+					"description" => "用户类型",
 				),
 				"ac_enable" => array(
 					"numeric" => true,
