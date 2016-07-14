@@ -92,6 +92,7 @@ class RegCommand extends Command
             $user->invite_num = 0;
             $user->reg_ip = "0.0.0.0";
             $user->ref_by = 0;
+            $user->allow_login = 0;
             //finish!
             if ($user->save()) {
                 $this->replyWithMessage(array(
