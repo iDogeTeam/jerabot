@@ -36,6 +36,8 @@ class RegCommand extends Command
     protected $description = "注册一个Doge账号";
 
     protected $access = Access::EVERYONE;
+    
+    protected  $pmOnly = true;
 
     public function initOptions()
     {

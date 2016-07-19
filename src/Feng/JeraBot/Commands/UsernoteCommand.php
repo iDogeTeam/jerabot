@@ -64,13 +64,17 @@ class UsernoteCommand extends Command
             ->describedAs("管理员");
 
         $this
+            ->addOption("login")
+            ->describedAs("面板登录");
+
+        $this
             ->addOption("m")
             ->describedAs("更改")
             ->boolean();
 
         $this
-            ->addOption("delete")
-            ->describedAs("删除")
+            ->addOption("prohibit")
+            ->describedAs("禁用")
             ->boolean();
     }
 
@@ -99,14 +103,26 @@ class UsernoteCommand extends Command
             $q = $this->getOption("q");
             $d = $this->getOption('d');
             $admin = $this->getOption("admin");
+            $login = $this->getOption("login");
+            $response .= "Doge ID";
+            $response .= $user->id;
+            $response .= "\r\n";
             $response .= "钦点用户: ";
             $response .=  $user->is_protected ? "是" : "否" ;
             $response .= "\r\n";
+            $response .= "管理员:";
+            $response .=  $user->is_admin ? "是" : "否" ;
+            $response .= "\r\n";
             $response .= "用户等级:" . $user->user_type . "\r\n";
             $response .= "捐赠金额:" . $user->donate_amount . "\r\n";
-            $response .= "备注:\r\n";
-            $response .= $user->note;
+            $response .= "面板登录" ;
+            $response .= $user->allow_login ? "是" : "否" ;
             $response .= "\r\n";
+            if ( $user->note!= null ) {
+                $response .= "备注:\r\n";
+                $response .= $user->note;
+                $response .= "\r\n";
+            }
             $response .= "端口:" . $user->port . "\r\n";
             $response .= "邮箱:" . $user->email . "\r\n";
             $response .= "用户名:" . $user->user_name . "\r\n";
@@ -128,6 +144,9 @@ class UsernoteCommand extends Command
                 if ( $this->getOption("admin")!= null ) {
                     $user->is_admin = $admin;
                 }
+                if ( $this->getOption("login")!= null ){
+                    $user->allow_login = $login;
+                }
                 if ($user->save()) {
                         $this->replyWithMessage(array(
                             "text" => "用户更改成功!"
@@ -139,14 +158,19 @@ class UsernoteCommand extends Command
                 }
             }
             //del
-            if ($this->getOption("delete")){
-                if ($user->delete()) {
+            if ($this->getOption("prohibit")){
+                $user->allow_login = 0;
+                $user->enable = 0;
+                if ($user->ac_enable){
+                    $user->ac_enable = 0;//miss sth. here
+                }
+                if ($user->save()){
                     $this->replyWithMessage(array(
-                        "text" => "用户删除成功!"
+                        "text" => "用户禁用成功!"
                     ));
                 } Else {
                     $this->replyWithMessage(array(
-                        "text" => "用户删除失败!"
+                        "text" => "用户禁用失败!"
                     ));
                 }
             }

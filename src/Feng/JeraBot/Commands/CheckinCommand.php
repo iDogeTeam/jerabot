@@ -81,13 +81,17 @@ class CheckinCommand extends Command {
 		if ( !$user->isAbleToCheckin() && !$this->getOption( "mh" ) ) {
 			$last = $user->last_check_in_time;
 			$after = strtotime( "+22 hours", $last );
+			$after_time = date("Y-m-d H:i:s",$after);
 			$now = strtotime("now");
 			$left_hours = round((($after-$now) / 3600),0, PHP_ROUND_HALF_DOWN)-1;
 			$left_mins = round(((($after-$now) % 3600) / 60),0, PHP_ROUND_HALF_DOWN);
  			if ( $ingress ) {
 				$message = "Portal 被烧毁！重建 Portal 可能需要大量时间。";
 			} else {
-				$message = "您似乎已经签到过了...\r\n距离下一次签到时间还有:\r\n_{$left_hours}_小时, _{$left_mins}_分钟。";
+				$message = "您似乎已经签到过了...、\r\n";
+				$message .= "您上一次的签到时间是_{$user->lastCheckInTime()}_ \r\n";
+				$message .= "您下次签到时间是_{$after_time}_\r\n";
+				$message .= "距离下一次签到时间还有:\r\n_{$left_hours}_小时, _{$left_mins}_分钟。";
 			}
 			$this->replyWithMessage( array(
 				"text" => $message,
