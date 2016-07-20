@@ -107,11 +107,7 @@ abstract class Command extends VanillaCommand {
 	 * yet.
 	 */
 	public function init() {
-		$this->replyWithChatAction( array(
-			"action" => "typing"
-		) );
 	}
-
 	/**
 	 * Initialize the options
 	 *
@@ -119,6 +115,9 @@ abstract class Command extends VanillaCommand {
 	 * a user runs a command.
 	 */
 	public function initOptions() {
+		$this->replyWitChatAction( array(
+			"action" => "typing"
+		) );
 	}
 
 	/**
@@ -136,6 +135,7 @@ abstract class Command extends VanillaCommand {
 	 */
 	public function make( $telegram, $arguments, $update ) {
 		$this->telegram = $telegram;
+		$this->arguments = $arguments;
 		$this->update = $update;
 		$this->commando = new Commando( array() );
 		$this->commando->useDefaultHelp( false );
@@ -193,11 +193,11 @@ abstract class Command extends VanillaCommand {
 	public function denied( $arguments ) {
 		// guys where is dat cat pic sending code i cant find it
 		// srsly i need some kitten love after all this dog hassle
-		$this->replyWithMessage( array(
-			"text" => "你的权限不够啊,使用命令也要遵守基本法好伐 \xF0\x9F\x98\x87"
-		) );
 		$formatted = Utils::formatTelegramUser( $this->getUpdate()->getMessage()->getFrom() );
 		$this->logger->addWarning( "药丸，权限不够：" . $formatted );
+		$this->replyWithMessage( array(
+			"text" => "你的权限不够啊，使用命令也要按照基本法好伐 \xF0\x9F\x8C\x9A"
+		) );
 	}
 
 	/**
@@ -208,7 +208,10 @@ abstract class Command extends VanillaCommand {
 	 */
 	public function parseError( $arguments, $e ) {
 		$this->replyWithMessage( array(
-			"text" => "\xF0\x9F\x98\x93 " . $e->getMessage()
+			"text" => "\xF0\x9F\x98\x93 在处理请求时发生了错误,是不是什么地方输错了?" . $e->getMessage()
+		) );
+		$this->replyWithMessage( array(
+			"text" => "\xF0\x9F\x98\x93 想要看看帮助的话请在指令后面输入 -help。例如: /intro -help "
 		) );
 	}
 

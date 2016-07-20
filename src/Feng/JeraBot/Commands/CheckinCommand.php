@@ -88,9 +88,9 @@ class CheckinCommand extends Command {
  			if ( $ingress ) {
 				$message = "Portal 被烧毁！重建 Portal 可能需要大量时间。";
 			} else {
-				$message = "您似乎已经签到过了...、\r\n";
-				$message .= "您上一次的签到时间是_{$user->lastCheckInTime()}_ \r\n";
-				$message .= "您下次签到时间是_{$after_time}_\r\n";
+				$message = "您似乎已经签到过了...\r\n";
+				$message .= "您上一次的签到时间是\r\n_{$user->lastCheckInTime()}_ \r\n";
+				$message .= "您下次签到时间是\r\n_{$after_time}_\r\n";
 				$message .= "距离下一次签到时间还有:\r\n_{$left_hours}_小时, _{$left_mins}_分钟。";
 			}
 			$this->replyWithMessage( array(
