@@ -12,11 +12,11 @@ use Feng\JeraBot\Command;
 use Feng\JeraBot\Access;
 use Feng\JeraBot\FindEngine;
 
-class ShadowsocksPortChangeCommand extends Command
+class PasswdChangeCommand extends Command
 {
-    protected $name = "ShadowsocksChange";
+    protected $name = "passwdchange";
 
-    protected $description = "修改Shadowsocks服务端口和密码";
+    protected $description = "修改Shadowsocks/Anyconnect服务(端口或密码)";
 
     protected $access = Access::EVERYONE;
 
@@ -31,7 +31,10 @@ class ShadowsocksPortChangeCommand extends Command
             ->describedAs("修改端口");
         $this
             ->addOption("password")
-            ->describedAs("修改密码");
+            ->describedAs("修改Shadowsocks密码");
+        $this
+            ->addOption("acpasswd")
+            ->describedAs("修改Anyconnect密码");
     }
 
     public function handle($arguments)
@@ -40,6 +43,7 @@ class ShadowsocksPortChangeCommand extends Command
         $port = $this->getOption("port");
         $password = $this->getOption("password");
         $p = mb_strlen($password);
+        $ac_passwd = $this->getOption("acpasswd");
 
 
         if (false === $user = $this->getPanelUser()) {
@@ -87,15 +91,30 @@ class ShadowsocksPortChangeCommand extends Command
             $user->passwd = $password;
             if ($user->save()) {
                 $this->replyWithMessage(array(
-                    "text" => "密码修改成功!请确认:" . $password
+                    "text" => "Shadowsocks密码修改成功!请确认:" . $password
                 ));
                 return;
             }
         }
-        $this->replyWithMessage(array(
 
-            "text" => "端口输入不正确,区间:10001-60000,或者密码不正确,请确认含有至少一个字符和数字,且长度大于8.请确认!Debug信息" . $password .$port . $p
+        //判断AnyConnect密码
+
+        if ( $ac_passwd
+            && $ac_passwd >=6
+        ) {
+            $user->ac_passwd = $ac_passwd;
+            if ($user->save()) {
+                $this->replyWithMessage(array(
+                    "text" => "Anyconnect密码修改成功!请确认:" . $password
+                ));
+                return;
+            }
+        }
+
+        $this->replyWithMessage(array(
+            "text" => "端口输入不正确,区间:10001-60000,或者Shadowsocks密码不正确,请确认含有至少一个字符和数字,且长度大于8.Anyconnect密码至少6位。请确认!"
         ));
     }
+
 
 }

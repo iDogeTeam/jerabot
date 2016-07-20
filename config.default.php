@@ -26,7 +26,7 @@ $config = array(
 		"\\Feng\\JeraBot\\Commands\\DataCommand",
 		"\\Feng\\JeraBot\\Commands\\NodeinfoCommand",
 		"\\Feng\\JeraBot\\Commands\\RegCommand",
-		"\\Feng\\JeraBot\\Commands\\ShadowsocksPortChangeCommand",
+		"\\Feng\\JeraBot\\Commands\\PasswdChangeCommand",
 		"\\Feng\\JeraBot\\Commands\\UsernoteCommand"
 
 	),
