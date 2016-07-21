@@ -30,7 +30,7 @@ class Commando extends \Commando\Command {
 				$short = ( 1 === mb_strlen( $option->getName(), "UTF-8" ) );
 				$aliases = $option->getAliases();
 				$return .= "\r\n*";
-				$return .= $short ? "-" : "--";
+				$return .= $short ? "-" : "-";
 				$return .= $option->getName();
 				if ( !empty( $aliases ) ) {
 					foreach ( $aliases as $alias ) {
