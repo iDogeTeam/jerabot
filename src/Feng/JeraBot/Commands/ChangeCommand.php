@@ -55,6 +55,7 @@ class ChangeCommand extends Command
         $ac_username = $this->getOption("acusername");
         $ac_user = mb_strlen($ac_username);
 
+
         if (false === $user = $this->getPanelUser()) {
             $this->replyWithMessage(array(
                 "text" => "你还没有绑定 Doge 账户呢！"
@@ -122,17 +123,23 @@ class ChangeCommand extends Command
         //判断AnyConnect密码
 
         if ($ac_passwd
-        &&  $ac_pass >=8
+        &&  $ac_pass >=6
         ) {
-            $user->ac_passwd = $ac_passwd;
-            if ($user->save()) {
+            if (mb_strlen($user->ac_user_name) + $ac_pass >= 14) {
+                $user->ac_passwd = $ac_passwd;
+                if ($user->save()) {
+                    $this->replyWithMessage(array(
+                        "text" => "Anyconnect密码修改成功!请确认: " . $ac_passwd
+                    ));
+                    return;
+                }
+            } Else {
                 $this->replyWithMessage(array(
-                    "text" => "Anyconnect密码修改成功!请确认: " . $ac_passwd
+                    "text" => "由于安全限制,用户名位数和密码位数总和必须大于14.你可以先修改您的密码,密码位数和用户名位数都必须大于4."
                 ));
                 return;
             }
         }
-
         //判断Anyconnect用户名
 
         if ( $ac_username
@@ -145,11 +152,18 @@ class ChangeCommand extends Command
                 ));
                 return;
             }
+            if ( mb_strlen($user->ac_passwd) + $ac_user >= 14 ) {
 
-            $user->ac_user_name = $ac_username;
-            if ($user->save()) {
+                $user->ac_user_name = $ac_username;
+                if ($user->save()) {
+                    $this->replyWithMessage(array(
+                        "text" => "Anyconnect用户名修改成功!请确认: " . $ac_username
+                    ));
+                    return;
+                }
+            }Else{
                 $this->replyWithMessage(array(
-                    "text" => "Anyconnect用户名修改成功!请确认: " . $ac_username
+                    "text" => "由于安全限制,用户名位数和密码位数总和必须大于14.你可以先修改您的密码,密码位数和用户名位数都必须大于4."
                 ));
                 return;
             }

@@ -98,7 +98,7 @@ class FindEngine {
 				"ac_user_name" => array(
 					"long" => "ac_user_name",
 					"short" => null,
-					"description" => "AnyConnect服务用户名"
+					"description" => "AnyConnect服务用户"
 				)
 			),
 		),
@@ -130,7 +130,7 @@ class FindEngine {
 		$t = $this->types[$this->type];
 		$model = $this->bridge->getModel( $t['model'] );
 		$results = null;
-		foreach ( $t['properties'] as $field => $detailsw ) {
+		foreach ( $t['properties'] as $field => $details ) {
 			$criterion = $this->command->getOption( $details['long'] );
 			if ( null !== $criterion ) {
 				if ( "null" == $criterion ) {
