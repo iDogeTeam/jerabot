@@ -46,7 +46,6 @@ class FindEngine {
 					"description" => "端口号",
 				),
 				"user_name" => array(
-					"numeric" => true,
 					"long" => "user_name",
 					"short" => null,
 					"description" => "昵称",
@@ -67,7 +66,7 @@ class FindEngine {
 					"short" => null,
 					"description" => "是否管理员",
 				),
-		"user_type" => array(
+			"user_type" => array(
 					"numeric" => true,
 					"long" => "user_type",
 					"short" => null,
@@ -85,6 +84,22 @@ class FindEngine {
 					"short" => null,
 					"description" => "绑定的 Telegram ID",
 				),
+				"is_protected" => array(
+					"numeric" => true,
+					"long" => "is_protected",
+					"short" => null,
+					"description" => "钦点用户",
+				),
+				"ac_passwd" => array(
+					"long" => "ac_passwd",
+					"short" => null,
+					"description" => "AnyConnect服务密码"
+				),
+				"ac_user_name" => array(
+					"long" => "ac_user_name",
+					"short" => null,
+					"description" => "AnyConnect服务用户名"
+				)
 			),
 		),
 	);
@@ -115,7 +130,7 @@ class FindEngine {
 		$t = $this->types[$this->type];
 		$model = $this->bridge->getModel( $t['model'] );
 		$results = null;
-		foreach ( $t['properties'] as $field => $details ) {
+		foreach ( $t['properties'] as $field => $detailsw ) {
 			$criterion = $this->command->getOption( $details['long'] );
 			if ( null !== $criterion ) {
 				if ( "null" == $criterion ) {

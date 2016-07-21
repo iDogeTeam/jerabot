@@ -85,6 +85,12 @@ class PanelBridge {
 	public function createUser(){
 		return new User();
 	}
+
+	public function AnyConnectUser($name){
+		$ac_result = User::where( "ac_user_name", "=", $name);
+		if ( $ac_result->count() == 0) return true; //唯一 = true 
+		else return false;
+	}
 	
 	public function getModel( $type ) {
 		switch ( $type ) {

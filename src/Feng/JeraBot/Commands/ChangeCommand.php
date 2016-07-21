@@ -7,16 +7,19 @@
  */
 
 namespace Feng\JeraBot\Commands;
+
 use Telegram\Bot\Actions;
 use Feng\JeraBot\Command;
 use Feng\JeraBot\Access;
 use Feng\JeraBot\FindEngine;
+use Feng\JeraBot\PanelBridge;
 
-class PasswdChangeCommand extends Command
+
+class ChangeCommand extends Command
 {
-    protected $name = "passwdchange";
+    protected $name = "change";
 
-    protected $description = "修改Shadowsocks/Anyconnect服务(端口或密码)";
+    protected $description = "修改Shadowsocks/Anyconnect服务(端口或密码或用户名)";
 
     protected $access = Access::EVERYONE;
 
@@ -35,16 +38,22 @@ class PasswdChangeCommand extends Command
         $this
             ->addOption("acpasswd")
             ->describedAs("修改Anyconnect密码");
+        $this
+            ->addOption("acusername")
+            ->describedAs("修改Anyconnect用户名");
+
     }
 
     public function handle($arguments)
     {
-        $bridge = $this->getPanelBridge();
+        $bridge = new PanelBridge();
         $port = $this->getOption("port");
         $password = $this->getOption("password");
         $p = mb_strlen($password);
         $ac_passwd = $this->getOption("acpasswd");
-
+        $ac_pass = mb_strlen($ac_passwd);
+        $ac_username = $this->getOption("acusername");
+        $ac_user = mb_strlen($ac_username);
 
         if (false === $user = $this->getPanelUser()) {
             $this->replyWithMessage(array(
@@ -91,28 +100,63 @@ class PasswdChangeCommand extends Command
             $user->passwd = $password;
             if ($user->save()) {
                 $this->replyWithMessage(array(
-                    "text" => "Shadowsocks密码修改成功!请确认:" . $password
+                    "text" => "Shadowsocks密码修改成功!请确认: " . $password
                 ));
+                return;
+            }
+        }
+
+        //判断Anyconnect是否开通
+        if ($ac_passwd||$ac_username) {
+            if (!$user->ac_enable) {
+                $this->replyWithMessage(array(
+                    "text" => "您无权修改您的AnyConnect服务相关设置!"
+                ));
+                $user->ac_user_name = "";
+                $user->ac_passwd = "";
+                $user->save();
                 return;
             }
         }
 
         //判断AnyConnect密码
 
-        if ( $ac_passwd
-            && $ac_passwd >=6
+        if ($ac_passwd
+        &&  $ac_pass >=8
         ) {
             $user->ac_passwd = $ac_passwd;
             if ($user->save()) {
                 $this->replyWithMessage(array(
-                    "text" => "Anyconnect密码修改成功!请确认:" . $password
+                    "text" => "Anyconnect密码修改成功!请确认: " . $ac_passwd
+                ));
+                return;
+            }
+        }
+
+        //判断Anyconnect用户名
+
+        if ( $ac_username
+            && $ac_user >=4
+        ) {
+
+            if ( !$bridge->AnyConnectUser($ac_username) ) { //唯一性检查
+                $this->replyWithMessage(array(
+                    "text" => "用户名已经被占用,请重新选择。"
+                ));
+                return;
+            }
+
+            $user->ac_user_name = $ac_username;
+            if ($user->save()) {
+                $this->replyWithMessage(array(
+                    "text" => "Anyconnect用户名修改成功!请确认: " . $ac_username
                 ));
                 return;
             }
         }
 
         $this->replyWithMessage(array(
-            "text" => "端口输入不正确,区间:10001-60000,或者Shadowsocks密码不正确,请确认含有至少一个字符和数字,且长度大于8.Anyconnect密码至少6位。请确认!"
+            "text" => "端口输入不正确,区间:10001-60000,或者Shadowsocks密码不正确,请确认含有至少一个字符和数字,且长度大于8.Anyconnect密码至少8位,用户名至少四位。请确认!"
         ));
     }
 
