@@ -123,6 +123,7 @@ class RegCommand extends Command
                 $this->replyWithMessage(array(
                     "text" => "你现在可以通过指令 /node 获取节点信息! /myinfo 获取个人信息!"
                 ));
+
             return;
             } Else {
                 $this->replyWithMessage(array( //warning

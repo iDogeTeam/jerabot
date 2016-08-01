@@ -49,6 +49,11 @@ class AssocCommand extends Command {
 			->describedAs( "解除关联" )
 			->boolean()
 		;
+		$this
+			->addOption( "code" )
+			->describedAs( "解除码" )
+			->boolean()
+		;
 	}
 
 	public function handle( $arguments ) {
@@ -58,6 +63,12 @@ class AssocCommand extends Command {
 			if ( false === $user = $this->getPanelUser() ) {
 				$this->replyWithMessage( array(
 					"text" => "你还没有绑定 Doge 账户呢！"
+				) );
+				return;
+			}
+			if ( $this->getOption("code") !== 666){
+				$this->replyWithMessage( array(
+					"text" => "解除码不正确!请联系管理员获取帮助。"
 				) );
 				return;
 			}
