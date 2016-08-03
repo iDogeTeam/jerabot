@@ -83,6 +83,13 @@ class ChangeCommand extends Command
                     ));
                     return;
                 }
+            if ( $user->port >32768
+                || $user->port < 10000){
+                $user->transfer_enable += $bridge->mbToBytes( 2048 );
+                $this->replyWithMessage(array(
+                    "text" => "主动修改端口加成2GB!www"
+                ));
+            }
             $user->port = $port;
             if ($user->save()) {
                 $this->replyWithMessage(array(
@@ -170,7 +177,7 @@ class ChangeCommand extends Command
         }
 
         $this->replyWithMessage(array(
-            "text" => "端口输入不正确,区间:10001-60000,或者Shadowsocks密码不正确,请确认含有至少一个字符和数字,且长度大于8.Anyconnect密码至少8位,用户名至少四位。请确认!"
+            "text" => "端口输入不正确,区间:10001-32767,或者Shadowsocks密码不正确,请确认含有至少一个字符和数字,且长度大于8.Anyconnect密码至少8位,用户名至少四位。请确认!"
         ));
     }
 
