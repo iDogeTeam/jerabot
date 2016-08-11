@@ -29,9 +29,9 @@ class ChangeCommand extends Command
 
     public function initOptions()
     {
-        $this
+     /**   $this
             ->addOption("port")
-            ->describedAs("修改端口");
+            ->describedAs("修改端口"); **/
         $this
             ->addOption("password")
             ->describedAs("修改Shadowsocks密码");
@@ -64,7 +64,7 @@ class ChangeCommand extends Command
             return;
         }
         //判断端口
-        if ($port
+       /** if ($port
             && $port > 10000
             && $port < 60000
         ) {
@@ -97,7 +97,7 @@ class ChangeCommand extends Command
                 ));
                 return;
             }
-        }
+        } **/
 
         //判断密码
         if ($password
@@ -177,7 +177,7 @@ class ChangeCommand extends Command
         }
 
         $this->replyWithMessage(array(
-            "text" => "端口输入不正确,区间:10001-32767,或者Shadowsocks密码不正确,请确认含有至少一个字符和数字,且长度大于8.Anyconnect密码至少8位,用户名至少四位。请确认!"
+            "text" => "Shadowsocks密码不正确,请确认含有至少一个字符和数字,且长度大于8.Anyconnect密码至少8位,用户名至少四位。请确认!"
         ));
     }
 
