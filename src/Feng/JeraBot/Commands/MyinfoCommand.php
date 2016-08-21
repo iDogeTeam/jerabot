@@ -44,6 +44,10 @@ class MyinfoCommand extends Command {
 			->describedAs( "隐藏私人信息"  )
 			->boolean()
 		;
+		$this
+			->addOption( "y" )
+			->aka( "p" )
+			->describedAs( "防止错误"  );
 	}
 
 	public function handle( $arguments ) {

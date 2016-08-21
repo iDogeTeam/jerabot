@@ -66,7 +66,7 @@ class AssocCommand extends Command {
 				) );
 				return;
 			}
-			if ( $this->getOption("code") !== 666){
+			if ( $this->getOption("code") != 666){
 				$this->replyWithMessage( array(
 					"text" => "解除码不正确!请联系管理员获取帮助。"
 				) );
