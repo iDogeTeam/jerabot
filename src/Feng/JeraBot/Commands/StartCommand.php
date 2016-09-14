@@ -44,7 +44,8 @@ class StartCommand extends Command {
           $this->triggerCommand( "login" );
 			} else {
 					$this->triggerCommand( "assoc" );
-		} else {
+		}
+	} else {
 			$this->triggerCommand( "help" );
 		}
 	}
