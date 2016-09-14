@@ -83,7 +83,7 @@ class CheckinCommand extends Command {
 			$after = strtotime( "+22 hours", $last );
 			$after_time = date("Y-m-d H:i:s",$after);
 			$now = strtotime("now");
-			$left_hours = round((($after-$now) / 3600),0, PHP_ROUND_HALF_DOWN)-1;
+			$left_hours = round((($after-$now) / 3600),0, PHP_ROUND_HALF_DOWN);
 			$left_mins = round(((($after-$now) % 3600) / 60),0, PHP_ROUND_HALF_DOWN);
  			if ( $ingress ) {
 				$message = "Portal 被烧毁！重建 Portal 可能需要大量时间。";
