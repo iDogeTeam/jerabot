@@ -40,6 +40,7 @@ class StartCommand extends Command {
 
 	public function handle( $arguments ) {
 		if ( !empty( $arguments ) && !$this->getPanelUser() ) {
+			if 
 			$this->triggerCommand( "assoc" );
 		} else {
 			$this->triggerCommand( "help" );
