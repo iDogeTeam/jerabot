@@ -29,7 +29,8 @@ $config = array(
 		"\\Feng\\JeraBot\\Commands\\ChangeCommand",
 		"\\Feng\\JeraBot\\Commands\\UsernoteCommand",
 		"\\Feng\\JeraBot\\Commands\\GiftcodeCommand",
-		"\\Feng\\JeraBot\\Commands\\LoginCommand"
+		"\\Feng\\JeraBot\\Commands\\LoginCommand"，
+		"\\Feng\\JeraBot\\Commands\\PreloadCommand"
 
 	),
 );

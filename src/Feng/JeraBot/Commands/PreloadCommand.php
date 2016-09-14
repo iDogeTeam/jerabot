@@ -27,23 +27,37 @@ use Telegram\Bot\Actions;
 use Feng\JeraBot\Command;
 use Feng\JeraBot\Access;
 
-class StartCommand extends Command {
-	protected $name = "start";
+class PreloadCommand extends Command
+{
+    protected $name = "preload";
 
-	protected $description = "开始你的 Doge 旅程";
+    protected $description = "过滤器";
 
-	protected $access = Access::EVERYONE;
+    protected $access = Access::EVERYONE;
 
-	protected $hidden = true;
+    protected $hidden = true;
 
-	protected $pmOnly = true;
+    protected $pmOnly = true;
 
-	public function handle( $arguments ) {
-		if ( !empty( $arguments ) ) {
-                $this->triggerCommand( "preload" );
-		} else {
-			$this->triggerCommand( "intro" );
-			$this->triggerCommand( "help" );
-		}
-	}
+    /*protected $find = null;*/
+
+
+    public function initOptions()
+    {
+        $this
+            ->addOption(0)
+            ->describedAs("截获消息");
+
+    }
+
+    public function handle( $arguments )
+    {
+        $raw = $this->getOption(0);
+        if ( strlen($raw) == 6) {
+            $this->triggerCommand("login");
+        } elseif ( !$this->getPanelUser()) {
+            $this->triggerCommand("assoc");
+        }
+    }
+
 }

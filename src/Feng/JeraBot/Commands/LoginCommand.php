@@ -34,9 +34,9 @@ class LoginCommand extends Command
 
     protected $description = "登录";
 
-    protected $pmOnly = true;
-
     protected $access = Access::EVERYONE;
+
+    protected $pmOnly = true;
 
     /*protected $find = null;*/
 
@@ -51,7 +51,6 @@ class LoginCommand extends Command
 
     public function handle($arguments)
     {
-
         $bridge = new PanelBridge();
 
         if (false === $user = $this->getPanelUser()) {
@@ -65,6 +64,7 @@ class LoginCommand extends Command
             $this->triggerCommand( $this->name, "-help" );
             return;
         }
+
 
         $get_code = $this->getOption(0);
 
@@ -86,28 +86,32 @@ class LoginCommand extends Command
             return;
         }
 
-        $created_at = strtotime( $code->created_at );
-        $expire_at = $created_at + strtotime("+2 minutes");
+        $created_at = $code->created_at;
+        $expire_at = strtotime('+180 seconds', $created_at);
         if ( $expire_at - strtotime("now") < 0 ){
             $this->replyWithMessage(array(
                 "text" => "安全码过期了!请重试!"
             ));
+            $code->delete();
             return;
         }
 
         $code->user_id = $user->id;
         $code->is_verify = 1;
+        $code->created_at = strtotime("now");
         if ( $code->save() ){
             $this->replyWithMessage(array(
                 "text" => "完成安全认证!请在页面上点击登录继续!"
             ));
-            $this->logger->addInfo( "Telegram 登录验证通过 {$user->user_name}. TGID {$user->telegram_id}. DogeId {$user->id}" );
+            $this->logger->addInfo( "登录：Doge {$user->id}，Name:{$user->user_name},TGID:{$user->telegram_id}" );
             return;
+
         }Else{
             $this->replyWithMessage(array(
                 "text" => "出现未知错误,请联系管理员"
             ));
             return;
+
         }
     }
 }
