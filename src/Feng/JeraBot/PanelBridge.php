@@ -30,6 +30,8 @@ use App\Models\InviteCode;
 use App\Utils\Tools;
 use App\Services\Analytics;
 use App\Utils\Hash;
+use App\Models\GiftCode;
+use App\Models\TgLogin;
 
 class PanelBridge {
 	public function __construct() {
@@ -99,5 +101,13 @@ class PanelBridge {
 			default: return false;
 		}
 	}
+	
+	public function getGiftCode( $code ){
+		return GiftCode::where('code', $code)->first();
+	}
+
+    public function verifyTgCode( $code ){
+        return TgLogin::where('safecode', $code)->first();
+    }
 }
 
