@@ -46,7 +46,6 @@ class MyinfoCommand extends Command {
 		;
 		$this
 			->addOption( "y" )
-			->aka( "p" )
 			->describedAs( "防止错误"  );
 	}
 

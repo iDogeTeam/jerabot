@@ -34,6 +34,8 @@ class LoginCommand extends Command
 
     protected $description = "登录";
 
+    protected $pmOnly = true;
+
     protected $access = Access::EVERYONE;
 
     /*protected $find = null;*/
@@ -49,6 +51,7 @@ class LoginCommand extends Command
 
     public function handle($arguments)
     {
+
         $bridge = new PanelBridge();
 
         if (false === $user = $this->getPanelUser()) {
@@ -62,7 +65,6 @@ class LoginCommand extends Command
             $this->triggerCommand( $this->name, "-help" );
             return;
         }
-
 
         $get_code = $this->getOption(0);
 
@@ -99,6 +101,7 @@ class LoginCommand extends Command
             $this->replyWithMessage(array(
                 "text" => "完成安全认证!请在页面上点击登录继续!"
             ));
+            $this->logger->addInfo( "Telegram 登录 {$user->id} with Telegram $tid" );
             return;
         }Else{
             $this->replyWithMessage(array(
