@@ -101,7 +101,7 @@ class LoginCommand extends Command
             $this->replyWithMessage(array(
                 "text" => "完成安全认证!请在页面上点击登录继续!"
             ));
-            $this->logger->addInfo( "Telegram 登录 {$user->id} with Telegram $tid" );
+            $this->logger->addInfo( "Telegram 登录验证通过 {$user->user_name}. TGID {$user->telegram_id}. DogeId {$user->id}" );
             return;
         }Else{
             $this->replyWithMessage(array(
