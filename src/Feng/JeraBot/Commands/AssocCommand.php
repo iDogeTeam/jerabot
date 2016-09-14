@@ -89,6 +89,10 @@ class AssocCommand extends Command {
 			$bridge = new PanelBridge();
 			$code = $this->getOption( 0 );
 			if ( empty( $code ) ) return;
+            if ( strlen( $code ) == 6 ){
+                $this->triggerCommand( "login" );
+                return;
+            } //How dirty it is ...
 			if ( $user = $bridge->getUserByTelegramToken( $code ) ) {
 				if ( $user->telegram_id ) {
 					$this->replyWithMessage( array(

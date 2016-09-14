@@ -38,22 +38,9 @@ class StartCommand extends Command {
 
 	protected $pmOnly = true;
 
-    public function initOptions()
-    {
-        $this
-            ->addOption("0")
-            ->describedAs("获取服务信息")
-            ->boolean();
-    }
-
 	public function handle( $arguments ) {
 		if ( !empty( $arguments ) && !$this->getPanelUser() ) {
-			$raw = $this->getOption(0);
-            if ( strlen($raw) == 6 ){
-                $this->triggerCommand( "login" );
-            }else {
                 $this->triggerCommand("assoc");
-            }
 		} else {
 			$this->triggerCommand( "help" );
 		}
