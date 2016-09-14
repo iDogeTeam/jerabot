@@ -27,7 +27,9 @@ $config = array(
 		"\\Feng\\JeraBot\\Commands\\NodeinfoCommand",
 		"\\Feng\\JeraBot\\Commands\\RegCommand",
 		"\\Feng\\JeraBot\\Commands\\ChangeCommand",
-		"\\Feng\\JeraBot\\Commands\\UsernoteCommand"
+		"\\Feng\\JeraBot\\Commands\\UsernoteCommand",
+		"\\Feng\\JeraBot\\Commands\\GiftcodeCommand",
+		"\\Feng\\JeraBot\\Commands\\LoginCommand"
 
 	),
 );
