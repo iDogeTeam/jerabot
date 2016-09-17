@@ -89,6 +89,7 @@ EOF;
 			"text" => $response,
 			"parse_mode" => "Markdown"
 		) );
+        $this->logger->addInfo( "stats：Doge {$user->id}，Name:{$user->user_name},TGID:{$user->telegram_id}");
 	}
 
 	public function tick() {

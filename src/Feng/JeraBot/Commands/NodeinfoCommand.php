@@ -55,6 +55,11 @@ class NodeinfoCommand extends Command
             ->boolean();
 
         $this
+            ->addOption("allss")
+            ->describedAs("全部的base64地址,用于安卓一次性导入")
+            ->boolean();
+
+        $this
             ->addOption("json")
             ->describedAs("显示节点的json")
             ->boolean();
@@ -155,11 +160,12 @@ EOF;
 "availabilityStatistics" : false}
 EOF;
 
-        global $pointid,$answerpoint,$response;
+        global $pointid,$answerpoint,$response,$allss;
         $response = "";
         $answerpoint = "";
         $part = "" ;
         $pointid = "";
+        $allss = "";
         //指定节点
        if ( $this->getOption("node") != "" ) {
             $pointname = $this->getOption("node");
@@ -189,7 +195,9 @@ EOF;
             $this->getOption("ac") ||
             $this->getOption("node") ||
             $this->getOption("json") ||
-            $this->getOption("file"))
+            $this->getOption("file") ||
+            $this->getOption("allss")
+        )
         ) {
             $this->replyWithMessage(array(
                 "text" => "请使用 -help 获取帮助\r\n 例如 /node -help 查看帮助 或者\r\n /node -ss 查看节点链接地址"
@@ -199,7 +207,7 @@ EOF;
         
         if ( !$this->getOption("y") ) {
             $this->replyWithMessage(array(
-                "text" => "请注意:节点流量比例设定\r\n最后计入的流量是你使用的实际流量乘以流量比例\r\n比如2就是说使用100m就算200m\r\n流量比例0的话就是不算流量\r\n以此类推...\r\n不显示该消息请在指令后加入 '-y' "
+                "text" => "请注意:节点流量比例设定\r\n最后计入的流量是你使用的实际流量乘以流量比例\r\n比如2就是说使用100m就算200m\r\n流量比例0的话就是不算流量\r\n以此类推...\r\n同时请注意汇总消息时间会较长,请不要反复发送指令。 "
             ));
         }
 
@@ -297,7 +305,7 @@ EOF;
                 }
             }
 
-            if ($this->getOption("ss")) {
+            if ( $this->getOption("ss") || $this->getOption("allss") ) {
                 $ssurl = $method . ":" . $password . "@" . $address . ":" . $port;
                 $ssqr = "ss://" . base64_encode($ssurl);
                 if ($pointid == $id) {
@@ -305,10 +313,16 @@ EOF;
                         $qr,
                         $ssqr
                     );
-                } Else {
+                } Elseif ($this->getOption("ss")) {
                     $response .= sprintf(
                         $qr,
                         $ssqr
+                    );
+                }Else{
+                    $allss .= sprintf(
+                        $qr,
+                        $ssqr,
+                        "\r\n"
                     );
                 }
             }
@@ -352,17 +366,17 @@ EOF;
                 $this->replyWithMessage(array(
                     "text" => $answerpoint
                 ));
-                sleep(1);
+                usleep(10);
                 $answerpoint = "";
                 break;
             }
                 if ($this->getOption("file") == false
-                    && $pointid == ""
+                    && $pointid == "" && $this->getOption("allss") == false
                 ) {
                     $this->replyWithMessage(array(
                         "text" => $response
                     ));
-                    sleep(1);
+                    usleep(10);
                     $response = "";
                 }
 
@@ -380,6 +394,22 @@ EOF;
             ));
         }
 
+        if ( $this->getOption("allss") ){
+            $this->replyWithMessage(array(
+                "text" => $allss
+            ));
+        }
+        //汇总用户信息
+        $judge = "";
+        if ( $this->getOption("ac") ) $judge .= " ac";
+        if ( $this->getOption("ss") ) $judge .= " ss";
+        if ( $this->getOption("s") ) $judge .= " s";
+        if ( $this->getOption("node") ) $judge .= " node";
+        if ( $this->getOption("json") ) $judge .= " json";
+        if ( $this->getOption("file") ) $judge .= " file";
+        if ( $this->getOption("allss") ) $judge .= " allss";
+
+        $this->logger->addInfo( "获取列表：Doge {$user->id}，Name:{$user->user_name},TGID:{$user->telegram_id}, 参数: {$judge}");
         $this->replyWithMessage(array(
             "text" => "消息发送完毕,频繁获取信息将会被列入黑名单。请谅解!"
         ));
