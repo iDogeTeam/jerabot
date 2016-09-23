@@ -40,11 +40,15 @@ class SendCommand extends Command {
 
 	public function initOptions() {
 		$this
-			->addOption( 0 )
+			->addOption( "i" )
 			->describedAs( "会话 ID" )
 		;
+        $this->getOption( "all" )
+            ->describedAs( "通知所有注册人" )
+            ->boolean()
+        ;
 		$this
-			->addOption( 1 )
+			->addOption( 0 )
 			->describedAs( "信息" )
 			->required()
 		;
@@ -57,10 +61,10 @@ class SendCommand extends Command {
 	}
 
 	public function handle( $arguments ) {
-		$id = $this->getOption( 0 );
-        $text = $this->getOption( 1 );
+		$id = $this->getOption( "i" );
+        $text = $this->getOption( 0 );
         $bridge = new PanelBridge();
-        if ( !$id ){
+        if ( $this->getOption( "all" )  ){
             $tgids = $bridge->getAllTelegramID();
             foreach ( $tgids as $tgid) {
                 try {
