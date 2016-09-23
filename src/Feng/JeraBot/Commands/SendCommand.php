@@ -26,6 +26,7 @@ namespace Feng\JeraBot\Commands;
 use Telegram\Bot\Actions;
 use Feng\JeraBot\Command;
 use Feng\JeraBot\Access;
+use Feng\JeraBot\PanelBridge;
 
 class SendCommand extends Command {
 	protected $name = "send";
@@ -41,7 +42,6 @@ class SendCommand extends Command {
 		$this
 			->addOption( 0 )
 			->describedAs( "会话 ID" )
-			->required()
 		;
 		$this
 			->addOption( 1 )
@@ -58,10 +58,26 @@ class SendCommand extends Command {
 
 	public function handle( $arguments ) {
 		$id = $this->getOption( 0 );
-		if ( $this->getOption( "group" ) ) $id = -1 * $id;
-		$this->getTelegram()->sendMessage( array(
-			"chat_id" => $id,
-			"text" => $this->getOption( 1 )
-		) );
+        $text = $this->getOption( 1 );
+        $bridge = new PanelBridge();
+        if ( !$id ){
+            $tgids = $bridge->getAllTelegramID();
+            foreach ( $tgids as $tgid) {
+                try {
+                    $this->getTelegram()->sendMessage(array(
+                        "chat_id" => $tgid,
+                        "text" => $text
+                    ));
+                } catch (Exception $e) {
+                    $this->logger->addInfo("Exception catch!, {$e}, TGID: $tgid");
+                }
+            }
+        }Else{
+            if ( $this->getOption( "group" ) ) $id = -1 * $id;
+            $this->getTelegram()->sendMessage( array(
+                "chat_id" => $id,
+                "text" => $this->getOption( 1 )
+            ) );
+        }
 	}
 }
