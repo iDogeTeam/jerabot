@@ -111,7 +111,7 @@ class PanelBridge {
     }
 
     public function getAllTelegramID(){
-        return User::where( "telegram_id", "!=", 0 );
+        return User::where( 'telegram_id', '>=', 0 );
     }
 }
 
