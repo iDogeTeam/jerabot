@@ -63,6 +63,7 @@ class SendCommand extends Command {
 
 	public function handle( $arguments ) {
 	    global $counts;
+        $counts = 0;
 		$id = $this->getOption( "i" );
         $text = $this->getOption( 0 );
         $bridge = new PanelBridge();
@@ -77,7 +78,7 @@ class SendCommand extends Command {
                         "text" => $text
                     ));
                 }
-                catch (Exception $e) {
+                catch (\Exception $e) {
                     $this->logger->addInfo("Exception catch!, {$e->getMessage()}, TGID: $tgid");
                     $counts = $counts - 1;
                 }
