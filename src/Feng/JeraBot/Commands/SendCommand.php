@@ -73,16 +73,24 @@ class SendCommand extends Command {
                         "chat_id" => $tgid,
                         "text" => $text
                     ));
-                } catch (Exception $e) {
-                    $this->logger->addInfo("Exception catch!, {$e}, TGID: $tgid");
+                }
+                catch (Exception $e) {
+                    $this->logger->addInfo("Exception catch!, {$e->getMessage()}, TGID: $tgid");
                 }
             }
-        }Else{
-            if ( $this->getOption( "group" ) ) $id = -1 * $id;
-            $this->getTelegram()->sendMessage( array(
-                "chat_id" => $id,
-                "text" => $this->getOption( 1 )
-            ) );
+        }Else {
+            if ($id) {
+                if ($this->getOption("group")) $id = -1 * $id;
+                $this->getTelegram()->sendMessage(array(
+                    "chat_id" => $id,
+                    "text" => $this->getOption(1)
+                ));
+            }Else{
+                $this->replyWithMessage( array(
+                    "text" => "error,no id gets",
+                    "parse_mode" => "Markdown"
+                ) );
+            }
         }
 	}
 }
