@@ -100,7 +100,7 @@ class RegCommand extends Command
                 $this->replyWithMessage(array(
                     "text" => "创建账号成功!进行绑定操作中..."
                 ));
-                $this->logger->addInfo("reg {$user->user_name}, not assoc, awaiting...")
+                $this->logger->addInfo("reg {$user->user_name}, not assoc, awaiting...");
             } Else {
                 $this->replyWithMessage(array( //warning
                     "text" => "创建账户失败,未知原因!请联系管理员。"
