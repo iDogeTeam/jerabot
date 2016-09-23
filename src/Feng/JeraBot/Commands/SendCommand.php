@@ -32,11 +32,10 @@ class SendCommand extends Command {
 
 	protected $description = "发送信息";
 
-	protected $access = Access::DEVELOPER;
+	protected $access = Access::ADMIN;
 
 	protected $hidden = true;
 
-	protected $pmOnly = true;
 
 	public function initOptions() {
 		$this
