@@ -45,7 +45,7 @@ class StatsCommand extends Command {
 
 	public function init() {
 		$this->bridge = new PanelBridge();
-        $this->replyWitChatAction( array(
+        $this->replyWithChatAction( array(
             "action" => "typing"
         ) );
 	}
