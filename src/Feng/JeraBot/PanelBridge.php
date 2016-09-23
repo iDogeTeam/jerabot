@@ -110,8 +110,8 @@ class PanelBridge {
         return TgLogin::where('safecode', $code)->first();
     }
 
-    public function getAllTelegramID(){
-        return User::where( 'telegram_id', '>=', 0 );
+    public function getAll(){
+        return User::all();
     }
 }
 

@@ -67,8 +67,9 @@ class SendCommand extends Command {
         $text = $this->getOption( 0 );
         $bridge = new PanelBridge();
         if ( $this->getOption( "all" )  ){
-            $tgids = $bridge->getAllTelegramID()->get();
+            $tgids = $bridge->getAll();
             foreach ( $tgids as $tgid) {
+                $tgid = $tgid->telegram_id;
                 $counts = $counts + 1;
                 try {
                     $this->getTelegram()->sendMessage(array(
@@ -90,7 +91,7 @@ class SendCommand extends Command {
                 if ($this->getOption("group")) $id = -1 * $id;
                 $this->getTelegram()->sendMessage(array(
                     "chat_id" => $id,
-                    "text" => $this->getOption(1)
+                    "text" => $this->getOption(0)
                 ));
             }Else{
                 $this->replyWithMessage( array(
