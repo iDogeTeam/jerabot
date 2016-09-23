@@ -62,12 +62,14 @@ class SendCommand extends Command {
 	}
 
 	public function handle( $arguments ) {
+	    global $counts;
 		$id = $this->getOption( "i" );
         $text = $this->getOption( 0 );
         $bridge = new PanelBridge();
         if ( $this->getOption( "all" )  ){
             $tgids = $bridge->getAllTelegramID();
             foreach ( $tgids as $tgid) {
+                $counts = $counts + 1;
                 try {
                     $this->getTelegram()->sendMessage(array(
                         "chat_id" => $tgid,
@@ -76,7 +78,9 @@ class SendCommand extends Command {
                 }
                 catch (Exception $e) {
                     $this->logger->addInfo("Exception catch!, {$e->getMessage()}, TGID: $tgid");
+                    $counts = $counts - 1;
                 }
+
             }
         }Else {
             if ($id) {
