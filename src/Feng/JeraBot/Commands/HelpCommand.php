@@ -111,7 +111,7 @@ class HelpCommand extends Command {
 			"text" => $response,
 			"parse_mode" => "Markdown"
 		) );
-        $this->logger->addInfo("trigger!tuser{$tuser}, TGID{$tid}");
+        $this->logger->addInfo("trigger!tuser: @{$tuser}, TGID{$tid}");
 	}
 
 	public function buildCache( $forced = false ) {

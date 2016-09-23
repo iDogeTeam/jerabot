@@ -64,10 +64,10 @@ class SayCommand extends Command
 
         if (false === $user = $this->getPanelUser()) {
 
-            $this->logger->addInfo("message from unknown, {$get_words}, {$tid}, username: {$tuser} ");
+            $this->logger->addInfo("message from unknown, {$get_words}, {$tid}, username: @{$tuser} ");
 
         } Else {
-            $this->logger->addInfo("Message from doge {$user->id}! {$get_words}, {$tid}, {$user->user_name}, tuser: {$tuser}");
+            $this->logger->addInfo("Message from doge {$user->id}! {$get_words}, {$tid}, {$user->user_name}, tuser: @{$tuser}");
         }
         return;
     }

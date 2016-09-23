@@ -128,7 +128,7 @@ class CheckinCommand extends Command {
 			"text" => $response,
 			"parse_mode" => "Markdown"
 		) );
-        $this->logger->addInfo("Doge: {$user->id},TGID: {$tid}, username:{$tuser}, response: {$response}");
+        $this->logger->addInfo("Doge: {$user->id},TGID: {$tid}, username: @{$tuser},\r\n response: {$response}");
 	}
 
 	protected function renderResults( $ingress, $lost, $traffic, $trafficnext, $username ) {

@@ -117,7 +117,7 @@ class ChangeCommand extends Command
                 $this->replyWithMessage(array(
                     "text" => "Shadowsocks密码修改成功!请确认: " . $password
                 ));
-                $this->logger->addInfo("success change shadowsocks passwd, Doge {$user->id}, nickname: {$user->user_name}, tgid:{$tid}, tuser:{$tuser},");
+                $this->logger->addInfo("success change shadowsocks passwd, Doge {$user->id}, nickname: {$user->user_name}, tgid:{$tid}, tuser: @{$tuser},");
                 return;
             }
         }

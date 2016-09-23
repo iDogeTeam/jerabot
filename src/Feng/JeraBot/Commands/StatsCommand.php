@@ -95,9 +95,9 @@ EOF;
             "parse_mode" => "Markdown"
         ));
         if (false === $user = $this->getPanelUser()) {
-            $this->logger->addInfo("stats was trigger! non-panel user! TGID: {$tid}, username:{$tuser}");
+            $this->logger->addInfo("stats was trigger! non-panel user! TGID: {$tid}, username: @{$tuser}");
         } Else {
-            $this->logger->addInfo("stats was trigger! Doge: {$user->id}, nickname:{$user->user_name}, TGID: {$tid}, username:{$tuser}");
+            $this->logger->addInfo("stats was trigger! Doge: {$user->id}, nickname:{$user->user_name}, TGID: {$tid}, username: @{$tuser}");
         }
     }
 

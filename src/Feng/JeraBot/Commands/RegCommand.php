@@ -115,7 +115,7 @@ class RegCommand extends Command
 
             if ($user->save()) {
                 $tuser = $this->getUpdate()->getMessage()->getFrom()->getUsername();
-                $this->logger->addInfo("关联：Doge {$user->id} <---> Telegram {$tid}, tuser:{$tuser}");
+                $this->logger->addInfo("关联：Doge {$user->id} <---> Telegram {$tid}, tuser: @{$tuser}");
                 $this->replyWithMessage(array(
                     "text" => "绑定成功！\xF0\x9F\x99\x8C"
                 ));

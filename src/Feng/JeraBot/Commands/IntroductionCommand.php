@@ -106,6 +106,7 @@ EOF;
                   "text" => $resource,
                   "parse_mode" => "Markdown"
               ));
+              $this->logger->addInfo("download! {$tid}! tuser: @{$tuser}");
             return;
         }
         if ( $this->getOption("d") ) {
@@ -208,7 +209,7 @@ EOF;
                 "parse_mode" => "Markdown"
             ));
             return;
-            $this->logger->addInfo("download! {$tid}! tuser: {$tuser}");
+
         }
         $this->replyWithMessage(array(
             "text" => '您现在看到的是简洁版介绍，请输入',

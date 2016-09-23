@@ -174,6 +174,6 @@ class GiftcodeCommand extends Command
             "text" => $response,
             "parse_mode" => "Markdown"
         ));
-        $this->logger->addInfo( "使用礼品码：Doge {$user->id}，Name:{$user->user_name},TGID:{$user->telegram_id}, username: {$tuser} 参数: {$get_code}");
+        $this->logger->addInfo( "使用礼品码：Doge {$user->id}，Name:{$user->user_name},TGID:{$user->telegram_id}, username: @{$tuser} 参数: {$get_code}");
     }
     }
