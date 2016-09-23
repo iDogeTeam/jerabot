@@ -45,6 +45,9 @@ class StatsCommand extends Command {
 
 	public function init() {
 		$this->bridge = new PanelBridge();
+        $this->replyWitChatAction( array(
+            "action" => "typing"
+        ) );
 	}
 
 	public function initOptions() {
@@ -56,41 +59,46 @@ class StatsCommand extends Command {
 		;
 	}
 
-	public function handle( $arguments ) {
-		$tid = $this->getUpdate()->getMessage()->getFrom()->getId();
-		$access = $this->bot->getAccessLevel( $tid );
-		$sts = $this->bridge->getAnalytics();
-		$template = <<<EOF
+	public function handle( $arguments )
+    {
+        $tid = $this->getUpdate()->getMessage()->getFrom()->getId();
+        $access = $this->bot->getAccessLevel($tid);
+        $sts = $this->bridge->getAnalytics();
+        $template = <<<EOF
 *DogeSpeed 状态*
 共有 %u 位用户，其中 %u 位在线。共产生了 %s 流量。
 瞬时速度：%s
 
 EOF;
-		$response = sprintf(
-			$template,
-			$sts->getTotalUser(),
-			$sts->getOnlineUser( 3600 ),
-			$sts->getTrafficUsage(),
-			$this->getSpeed()
-		);
-		if ( $this->getOption( "all" ) ) {
-			if ( Access::ADMIN <= $access ) {
-				$template = <<<EOF
-*JeraBot 状态*
+        $response = sprintf(
+            $template,
+            $sts->getTotalUser(),
+            $sts->getOnlineUser(3600),
+            $sts->getTrafficUsage(),
+            $this->getSpeed()
+        );
+        if ($this->getOption("all")) {
+            if (Access::ADMIN <= $access) {
+                $template = <<<EOF
+*DogeBot 状态*
 表示存活～貌似吃掉了 %u 字节的内存（好吃！
 EOF;
-				$response .= sprintf(
-					$template,
-					memory_get_usage( true )
-				);
-			}
-		}
-		$this->replyWithMessage( array(
-			"text" => $response,
-			"parse_mode" => "Markdown"
-		) );
-        $this->logger->addInfo( "stats：Doge {$user->id}，Name:{$user->user_name},TGID:{$user->telegram_id}");
-	}
+                $response .= sprintf(
+                    $template,
+                    memory_get_usage(true)
+                );
+            }
+        }
+        $this->replyWithMessage(array(
+            "text" => $response,
+            "parse_mode" => "Markdown"
+        ));
+        if (false === $user = $this->getPanelUser()) {
+            $this->logger->addInfo("stats was trigger! non-panel user! TGID: {$tid}");
+        } Else {
+            $this->logger->addInfo("stats was trigger! Doge: {$user->id}, nickname:{$user->user_name}, TGID: {$tid}");
+        }
+    }
 
 	public function tick() {
 		if ( time() < $this->tickTimestamp + $this->tickInterval ) return;

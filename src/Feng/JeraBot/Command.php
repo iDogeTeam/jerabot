@@ -107,9 +107,7 @@ abstract class Command extends VanillaCommand {
 	 * yet.
 	 */
 	public function init() {
-        $this->replyWitChatAction( array(
-            "action" => "typing"
-        ) );
+
 	}
 	/**
 	 * Initialize the options

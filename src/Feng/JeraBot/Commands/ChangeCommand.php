@@ -25,6 +25,9 @@ class ChangeCommand extends Command
 
     public function init() {
         $this->find = new FindEngine( "user", $this );
+        $this->replyWitChatAction( array(
+            "action" => "typing"
+        ) );
     }
 
     public function initOptions()
@@ -41,7 +44,9 @@ class ChangeCommand extends Command
         $this
             ->addOption("acusername")
             ->describedAs("修改Anyconnect用户名");
-
+        $this
+            ->addOption("nc")
+            ->describedAs("修改昵称");
     }
 
     public function handle($arguments)
@@ -54,7 +59,7 @@ class ChangeCommand extends Command
         $ac_pass = mb_strlen($ac_passwd);
         $ac_username = $this->getOption("acusername");
         $ac_user = mb_strlen($ac_username);
-
+        $nc = $this->getOption("nc");
 
         if (false === $user = $this->getPanelUser()) {
             $this->replyWithMessage(array(
@@ -176,8 +181,19 @@ class ChangeCommand extends Command
             }
         }
 
+        if ( $nc &&
+        !preg_match("/[_*]", $nc)){
+            $user->user_name = $nc;
+            if ( $user->save() ){
+                $this->replyWithMessage(array(
+                    "text" => "昵称修改成功!请确认: " . $nc
+                ));
+                return;
+            }
+        }
+
         $this->replyWithMessage(array(
-            "text" => "Shadowsocks密码不正确,请确认含有至少一个字符和数字,且长度大于8.Anyconnect密码至少8位,用户名至少四位。请确认!"
+            "text" => "Shadowsocks密码不正确,请确认含有至少一个字符和数字,且长度大于8.Anyconnect密码至少8位,用户名至少四位。昵称中不能含有*和_ 。请确认!"
         ));
     }
 
