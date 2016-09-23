@@ -43,7 +43,8 @@ class SendCommand extends Command {
 			->addOption( "i" )
 			->describedAs( "会话 ID" )
 		;
-        $this->getOption( "all" )
+        $this
+            ->addOption( "all" )
             ->describedAs( "通知所有注册人" )
             ->boolean()
         ;
