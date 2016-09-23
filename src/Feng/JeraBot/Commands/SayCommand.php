@@ -27,6 +27,7 @@ use Telegram\Bot\Actions;
 use Feng\JeraBot\Command;
 use Feng\JeraBot\Access;
 use Feng\JeraBot\PanelBridge;
+use Feng\JeraBot\FindEngine;
 
 class SayCommand extends Command
 {
