@@ -50,7 +50,8 @@ class GiftcodeCommand extends Command
     public function handle($arguments)
     {
         $bridge = new PanelBridge();
-        
+        $tid = $this->getUpdate()->getMessage()->getFrom()->getId();
+        $tuser = $this->getUpdate()->getMessage()->getFrom()->getUsername();
         if (false === $user = $this->getPanelUser()) {
             $this->replyWithMessage(array(
                 "text" => "你还没有绑定 Doge 账户呢！"
@@ -173,6 +174,6 @@ class GiftcodeCommand extends Command
             "text" => $response,
             "parse_mode" => "Markdown"
         ));
-        $this->logger->addInfo( "使用礼品码：Doge {$user->id}，Name:{$user->user_name},TGID:{$user->telegram_id}, 参数: {$get_code}");
+        $this->logger->addInfo( "使用礼品码：Doge {$user->id}，Name:{$user->user_name},TGID:{$user->telegram_id}, username: {$tuser} 参数: {$get_code}");
     }
     }

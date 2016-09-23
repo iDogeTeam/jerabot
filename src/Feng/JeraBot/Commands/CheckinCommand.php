@@ -72,6 +72,8 @@ class CheckinCommand extends Command {
 			) );
 			return;
 		}
+        $tid = $this->getUpdate()->getMessage()->getFrom()->getId();
+        $tuser = $this->getUpdate()->getMessage()->getFrom()->getUsername();
 		if ( $this->getOption( "mh" ) && !$user->is_admin ) {
 			$this->replyWithMessage( array(
 				"text" => "Hack acquired no items."
@@ -126,6 +128,7 @@ class CheckinCommand extends Command {
 			"text" => $response,
 			"parse_mode" => "Markdown"
 		) );
+        $this->logger->addInfo("Doge: {$user->id},TGID: {$tid}, username:{$tuser}, response: {$response}");
 	}
 
 	protected function renderResults( $ingress, $lost, $traffic, $trafficnext, $username ) {

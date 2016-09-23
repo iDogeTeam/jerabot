@@ -51,6 +51,8 @@ class LoginCommand extends Command
 
     public function handle($arguments)
     {
+        $tid = $this->getUpdate()->getMessage()->getFrom()->getId();
+        $tuser = $this->getUpdate()->getMessage()->getFrom()->getUsername();
         $bridge = new PanelBridge();
 
         if (false === $user = $this->getPanelUser()) {
@@ -103,7 +105,7 @@ class LoginCommand extends Command
             $this->replyWithMessage(array(
                 "text" => "完成安全认证!请在页面上点击登录继续!"
             ));
-            $this->logger->addInfo( "登录：Doge {$user->id}，Name:{$user->user_name},TGID:{$user->telegram_id}" );
+            $this->logger->addInfo( "登录：Doge {$user->id}，Name:{$user->user_name},TGID:{$user->telegram_id}, tuser{$tuser}" );
             return;
 
         }Else{

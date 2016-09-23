@@ -62,6 +62,7 @@ class StatsCommand extends Command {
 	public function handle( $arguments )
     {
         $tid = $this->getUpdate()->getMessage()->getFrom()->getId();
+        $tuser = $this->getUpdate()->getMessage()->getFrom()->getUsername();
         $access = $this->bot->getAccessLevel($tid);
         $sts = $this->bridge->getAnalytics();
         $template = <<<EOF
@@ -94,9 +95,9 @@ EOF;
             "parse_mode" => "Markdown"
         ));
         if (false === $user = $this->getPanelUser()) {
-            $this->logger->addInfo("stats was trigger! non-panel user! TGID: {$tid}");
+            $this->logger->addInfo("stats was trigger! non-panel user! TGID: {$tid}, username:{$tuser}");
         } Else {
-            $this->logger->addInfo("stats was trigger! Doge: {$user->id}, nickname:{$user->user_name}, TGID: {$tid}");
+            $this->logger->addInfo("stats was trigger! Doge: {$user->id}, nickname:{$user->user_name}, TGID: {$tid}, username:{$tuser}");
         }
     }
 

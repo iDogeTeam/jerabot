@@ -42,6 +42,10 @@ class IntroductionCommand extends Command
 
     public function handle($arguments)
     {
+
+        $tid = $this->getUpdate()->getMessage()->getFrom()->getId();
+        $tuser = $this->getUpdate()->getMessage()->getFrom()->getUsername();
+
         if ( $this->getOption("tos") ){
             $this->replyWithMessage(array(
                 "text" => 'https://dogespeed.ga/tos/',
@@ -204,6 +208,7 @@ EOF;
                 "parse_mode" => "Markdown"
             ));
             return;
+            $this->logger->addInfo("download! {$tid}! tuser: {$tuser}");
         }
         $this->replyWithMessage(array(
             "text" => '您现在看到的是简洁版介绍，请输入',
@@ -221,5 +226,7 @@ EOF;
             "text" => $short,
             "parse_mode" => "Markdown"
         ));
+
+        $this->logger->addInfo("Intro {$tid}! tuser: {$tuser}");
     }
 }

@@ -408,8 +408,10 @@ EOF;
         if ( $this->getOption("json") ) $judge .= " json";
         if ( $this->getOption("file") ) $judge .= " file";
         if ( $this->getOption("allss") ) $judge .= " allss";
+        $tid = $this->getUpdate()->getMessage()->getFrom()->getId();
+        $tuser = $this->getUpdate()->getMessage()->getFrom()->getUsername();
 
-        $this->logger->addInfo( "获取列表：Doge {$user->id}，Name:{$user->user_name},TGID:{$user->telegram_id}, 参数: {$judge}");
+        $this->logger->addInfo( "获取列表：Doge {$user->id}，Name:{$user->user_name},TGID:{$user->telegram_id},tuser{$tuser}, 参数: [{$judge}]");
         $this->replyWithMessage(array(
             "text" => "消息发送完毕,频繁获取信息将会被列入黑名单。请谅解!"
         ));

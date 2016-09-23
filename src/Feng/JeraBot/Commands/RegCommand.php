@@ -100,6 +100,7 @@ class RegCommand extends Command
                 $this->replyWithMessage(array(
                     "text" => "创建账号成功!进行绑定操作中..."
                 ));
+                $this->logger->addInfo("reg {$user->user_name}, not assoc, awaiting...")
             } Else {
                 $this->replyWithMessage(array( //warning
                     "text" => "创建账户失败,未知原因!请联系管理员。"
@@ -113,7 +114,8 @@ class RegCommand extends Command
             $user->telegram_token = "";
 
             if ($user->save()) {
-                $this->logger->addInfo("关联：Doge {$user->id} <---> Telegram $tid");
+                $tuser = $this->getUpdate()->getMessage()->getFrom()->getUsername();
+                $this->logger->addInfo("关联：Doge {$user->id} <---> Telegram {$tid}, tuser:{$tuser}");
                 $this->replyWithMessage(array(
                     "text" => "绑定成功！\xF0\x9F\x99\x8C"
                 ));

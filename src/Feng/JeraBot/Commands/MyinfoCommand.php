@@ -56,6 +56,8 @@ class MyinfoCommand extends Command {
 			) );
 			return;
 		}
+        $tid = $this->getUpdate()->getMessage()->getFrom()->getId();
+        $tuser = $this->getUpdate()->getMessage()->getFrom()->getUsername();
 		$privacy = $this->getOption( 'privacy' );
 		$template = <<<EOF
 *Shadowsocks*
@@ -94,6 +96,6 @@ EOF;
 			"text" => $response,
 			"parse_mode" => "Markdown"
 		) );
-        $this->logger->addInfo( "查看个人信息：Doge {$user->id}，Name:{$user->user_name},TGID:{$user->telegram_id}");
+        $this->logger->addInfo( "查看个人信息：Doge {$user->id}，Name:{$user->user_name},TGID:{$user->telegram_id}, tuser{$tuser}");
 	}
 }

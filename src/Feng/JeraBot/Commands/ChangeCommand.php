@@ -60,6 +60,8 @@ class ChangeCommand extends Command
         $ac_username = $this->getOption("acusername");
         $ac_user = mb_strlen($ac_username);
         $nc = $this->getOption("nc");
+        $tid = $this->getUpdate()->getMessage()->getFrom()->getId();
+        $tuser = $this->getUpdate()->getMessage()->getFrom()->getUsername();
 
         if (false === $user = $this->getPanelUser()) {
             $this->replyWithMessage(array(
@@ -115,6 +117,7 @@ class ChangeCommand extends Command
                 $this->replyWithMessage(array(
                     "text" => "Shadowsocks密码修改成功!请确认: " . $password
                 ));
+                $this->logger->addInfo("success change shadowsocks passwd, Doge {$user->id}, nickname: {$user->user_name}, tgid:{$tid}, tuser:{$tuser},");
                 return;
             }
         }
@@ -143,6 +146,7 @@ class ChangeCommand extends Command
                     $this->replyWithMessage(array(
                         "text" => "Anyconnect密码修改成功!请确认: " . $ac_passwd
                     ));
+                    $this->logger->addInfo("success change anyconnect passwd, Doge {$user->id}, nickname: {$user->user_name}, tgid:{$tid}, tuser:{$tuser},");
                     return;
                 }
             } Else {
@@ -171,6 +175,7 @@ class ChangeCommand extends Command
                     $this->replyWithMessage(array(
                         "text" => "Anyconnect用户名修改成功!请确认: " . $ac_username
                     ));
+                    $this->logger->addInfo("success change anyconnect username, Doge {$user->id}, nickname: {$user->user_name}, tgid:{$tid}, tuser:{$tuser},");
                     return;
                 }
             }Else{
@@ -188,13 +193,17 @@ class ChangeCommand extends Command
                 $this->replyWithMessage(array(
                     "text" => "昵称修改成功!请确认: " . $nc
                 ));
+                $this->logger->addInfo("success, Doge {$user->id}, change nickname: {$user->user_name}, tgid:{$tid}, tuser:{$tuser},");
                 return;
+
             }
         }
 
         $this->replyWithMessage(array(
             "text" => "Shadowsocks密码不正确,请确认含有至少一个字符和数字,且长度大于8.Anyconnect密码至少8位,用户名至少四位。昵称中不能含有*和_ 。请确认!"
         ));
+
+        $this->logger->addInfo("fail, Doge {$user->id}, nickname: {$user->user_name}, tgid:{$tid}, tuser:{$tuser} ");
     }
 
 

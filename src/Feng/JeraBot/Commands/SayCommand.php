@@ -54,7 +54,7 @@ class SayCommand extends Command
     public function handle($arguments)
     {
         $tid = $this->getUpdate()->getMessage()->getFrom()->getId();
-
+        $tuser = $this->getUpdate()->getMessage()->getFrom()->getUsername();
         if (empty($this->getOption(0))) {
             $this->triggerCommand($this->name, "-help");
             return;
@@ -64,10 +64,10 @@ class SayCommand extends Command
 
         if (false === $user = $this->getPanelUser()) {
 
-            $this->logger->addInfo("message from unknown, {$get_words}, {$tid}");
+            $this->logger->addInfo("message from unknown, {$get_words}, {$tid}, username: {$tuser} ");
 
         } Else {
-            $this->logger->addInfo("Message from doge {$user->id}! {$get_words}, {$tid}, {$user->user_name}");
+            $this->logger->addInfo("Message from doge {$user->id}! {$get_words}, {$tid}, {$user->user_name}, tuser: {$tuser}");
         }
         return;
     }

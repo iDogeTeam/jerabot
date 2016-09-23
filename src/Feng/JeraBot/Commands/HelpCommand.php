@@ -71,6 +71,7 @@ class HelpCommand extends Command {
 
 	public function handle( $arguments ) {
 		$tid = $this->getUpdate()->getMessage()->getFrom()->getId();
+        $tuser = $this->getUpdate()->getMessage()->getFrom()->getUsername();
 		$access = $this->bot->getAccessLevel( $tid );
 		if ( null !== $altaccess = $this->getOption( "access" ) ) {
 			if ( $altaccess > $access ) {
@@ -110,6 +111,7 @@ class HelpCommand extends Command {
 			"text" => $response,
 			"parse_mode" => "Markdown"
 		) );
+        $this->logger->addInfo("trigger!tuser{$tuser}, TGID{$tid}");
 	}
 
 	public function buildCache( $forced = false ) {
