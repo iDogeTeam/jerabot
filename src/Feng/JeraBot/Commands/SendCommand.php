@@ -81,11 +81,13 @@ class SendCommand extends Command {
                     $this->logger->addInfo("Exception catch!, {$e->getMessage()}, TGID: $tgid");
                     $counts = $counts - 1;
                 }
+                usleep(50);
             }
             $this->replyWithMessage( array(
                 "text" => "ends,{$counts}sent",
                 "parse_mode" => "Markdown"
             ) );
+
         }Else {
             if ($id) {
                 if ($this->getOption("group")) $id = -1 * $id;
