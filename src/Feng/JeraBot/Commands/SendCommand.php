@@ -67,7 +67,7 @@ class SendCommand extends Command {
         $text = $this->getOption( 0 );
         $bridge = new PanelBridge();
         if ( $this->getOption( "all" )  ){
-            $tgids = $bridge->getAllTelegramID();
+            $tgids = $bridge->getAllTelegramID()->get();
             foreach ( $tgids as $tgid) {
                 $counts = $counts + 1;
                 try {
