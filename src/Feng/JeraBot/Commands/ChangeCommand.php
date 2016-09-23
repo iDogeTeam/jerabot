@@ -195,7 +195,6 @@ class ChangeCommand extends Command
                 ));
                 $this->logger->addInfo("success, Doge {$user->id}, change nickname: {$user->user_name}, tgid:{$tid}, tuser:{$tuser},");
                 return;
-
             }
         }
 

@@ -68,28 +68,32 @@ class SendCommand extends Command {
         $text = $this->getOption( 0 );
         $bridge = new PanelBridge();
         if ( $this->getOption( "all" )  ){
-            $tgids = $bridge->getAll();
-            foreach ( $tgids as $tgid) {
-                $tgid = $tgid->telegram_id;
-                $counts = $counts + 1;
-                try {
-                    $this->getTelegram()->sendMessage(array(
-                        "chat_id" => $tgid,
-                        "text" => $text
-                    ));
+            $alls = $bridge->getAll();
+            foreach ( $alls as $all) {
+                $tgid = $all->telegram_id;
+                if (!$tgid) {
+                    $counts = $counts + 1;
+                    $all->is_telegram_disabled = 0;
+                    try {
+                        $this->getTelegram()->sendMessage(array(
+                            "chat_id" => $tgid,
+                            "text" => $text
+                        ));
+                    } catch (\Exception $e) {
+                        $this->logger->addInfo("Exception catch!, {$e->getMessage()}, TGID: $tgid");
+                        $counts = $counts - 1;
+                        $all->is_telegram_disabled = 1;
+                    }
+                    $all->save();
+                    usleep(10);
                 }
-                catch (\Exception $e) {
-                    $this->logger->addInfo("Exception catch!, {$e->getMessage()}, TGID: $tgid");
-                    $counts = $counts - 1;
-                }
-                usleep(50);
             }
             $this->replyWithMessage( array(
                 "text" => "ends,{$counts}sent",
                 "parse_mode" => "Markdown"
             ) );
 
-        }Else {
+        } else {
             if ($id) {
                 if ($this->getOption("group")) $id = -1 * $id;
                 $this->getTelegram()->sendMessage(array(
