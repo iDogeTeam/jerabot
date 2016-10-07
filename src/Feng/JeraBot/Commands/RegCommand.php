@@ -49,6 +49,10 @@ class RegCommand extends Command
             ->addOption("upgrade")
             ->describedAs("升级用户")
             ->boolean();
+
+        $this
+            ->addOption("code")
+            ->describeAs("邀请码");
     }
 
     public function handle($arguments)
@@ -69,6 +73,11 @@ class RegCommand extends Command
             return;
         }
 
+        if ( $this->getOption("code") != 666){
+            $this->replyWithMessage(array(
+                "text" => "公开注册暂时关闭,如有需要请联系管理员获得帮助"
+            ));
+        }
         if ($this->getOption("y")) {
             $this->replyWithMessage(array( //warning
                 "text" => "看来你已经确认了我们的服务条款,欢迎你加入我们! 正在为你创建账号.."

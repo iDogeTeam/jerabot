@@ -79,12 +79,13 @@ class SendCommand extends Command {
                             "chat_id" => $tgid,
                             "text" => $text
                         ));
+                        $all->save();
                     } catch (\Exception $e) {
                         $this->logger->addInfo("Exception catch!, {$e->getMessage()}, TGID: $tgid");
                         $counts = $counts - 1;
                         $all->is_telegram_disabled = 1;
+                        $all->save();
                     }
-                    $all->save();
                     usleep(10);
                 }
             }
