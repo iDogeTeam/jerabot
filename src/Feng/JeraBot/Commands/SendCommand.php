@@ -71,7 +71,7 @@ class SendCommand extends Command {
             $alls = $bridge->getAll();
             foreach ( $alls as $all) {
                 $tgid = $all->telegram_id;
-                if (!$tgid) {
+                if ($tgid) {
                     $counts = $counts + 1;
                     $all->is_telegram_disabled = 0;
                     try {
@@ -81,7 +81,7 @@ class SendCommand extends Command {
                         ));
                         $all->save();
                     } catch (\Exception $e) {
-                        $this->logger->addInfo("Exception catch!, {$e->getMessage()}, TGID: $tgid");
+                        $this->logger->addInfo("Exception catch!, {$e->getMessage()}, User: $all->user_name, DogeID:$all->id");
                         $counts = $counts - 1;
                         $all->is_telegram_disabled = 1;
                         $all->save();
