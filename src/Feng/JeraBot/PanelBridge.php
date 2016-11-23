@@ -69,8 +69,12 @@ class PanelBridge {
 	}
 
 	public function getNodes(){
-		return Node::whereRaw('type =  1 or type = 2 or type = 3')->orderBy('sort')->get();   //all nodes
+        return Node::whereRaw('type =  1 or type = 2 or type = 3')->orderBy('sort')->get();   //all nodes
 	}
+
+	public function searchNodes($name){
+        return Node::whereInloose('name', $name)->firstorfail();
+    }
 
 	public function genRandomChar($num){
 		return Tools::genRandomChar($num);
@@ -113,5 +117,6 @@ class PanelBridge {
     public function getAll(){
         return User::all();
     }
+
 }
 

@@ -160,34 +160,29 @@ EOF;
 "availabilityStatistics" : false}
 EOF;
 
-        global $pointid,$answerpoint,$response,$allss;
+        global $response,$allss, $part;
         $response = "";
-        $answerpoint = "";
         $part = "" ;
-        $pointid = "";
         $allss = "";
         //指定节点
        if ( $this->getOption("node") != "" ) {
             $pointname = $this->getOption("node");
-            foreach ($ssnodes as $node) {
-                $name = $node->name;
-                if ( strcasecmp($pointname,$name) == 0 ) {
-                    $pointid = $node->id;
-                    break;
-                }
-            }
+
            //check vaild or not
-           if ( $pointid == null) {
+          try{$pointnode = $bridge->searchNodes($pointname);}
+           catch (\Exception $e) {
                $this->replyWithMessage(array(
-                   "text" => "无效的节点名称"
+                   "text" => "出现错误" . $e
                ));
                return;
-           }Else{
-               $this->replyWithMessage(array(
-                   "text" => "信息检索到了!服务器id为" . $pointid
+           }
+           $ssurl = $pointnode->custom_method ? $pointnode->method : $user->method. ":" . $password . "@" . $pointnode->server . ":" . $user->port;
+           $ssqr = "ss://" . base64_encode($ssurl);
+
+           $this->replyWithMessage(array(
+               "text" => "信息检索到了!服务器id为" . $pointnode->name . "\r\n" . $ssqr
                ));
            }
-        }
 
         if ( !($this->getOption("ac") ||
             $this->getOption("ss") ||
@@ -230,67 +225,28 @@ EOF;
             $people = $node->getOnlineUserCount();
             $traffic = $node->getTrafficFromLogs();
             $time = $node->getNodeUptime();
-            $ary['server'] = $address;
-            $ary['server_port'] = $port;
-            $ary['password'] = $password;
-            $ary['method'] = $method;
-            if ( $pointid == $id ) { //main
-                $answerpoint .= sprintf(
+
+                $response .= sprintf(  //main
                     $main,
                     $name,
                     $id,
                     $status,
                     $rate
                 );
-            } Else {
-                $response .= sprintf(
-                    $main,
-                    $name,
-                    $id,
-                    $status,
-                    $rate
-                );
-            }
 
             if ($this->getOption("ac")) {
-
-                if ($pointid == $id) {
                     if ($user->ac_enable) {
                         if ($type == 2 || $type == 3) {
-                            $answerpoint .= "\r\n是否AC:是";
+                            $response .= "\r\n是否AC:是";
                         } Else {
-                            $answerpoint .= "\r\n是否AC:否";
+                            $response .= "\r\n是否AC:否";
                         }
                     } Else {
-                        $answerpoint .= "\r\n是否AC:您无权访问此信息";
+                        $response .= "\r\n是否AC:您无权访问此信息";
                     }
-                }
-
-                if ($user->ac_enable) {
-                    if ($type == 2 || $type == 3) {
-                        $response .= "\r\n是否AC:是";
-                    } Else {
-                        $response .= "\r\n是否AC:否";
-                    }
-                } Else {
-                    $response .= "\r\n是否AC:您无权访问此信息";
-                }
             }
 
             if ($this->getOption("s")) {   //details
-                if ($pointid == $id) {
-                    $answerpoint .= sprintf(
-                        $other,
-                        $address,
-                        $port,
-                        $method,
-                        $note,
-                        $load,
-                        $people,
-                        $traffic,
-                        $time
-                    );
-                } Else {
                     $response .= sprintf(
                         $other,
                         $address,
@@ -303,17 +259,11 @@ EOF;
                         $time
                     );
                 }
-            }
 
             if ( $this->getOption("ss") || $this->getOption("allss") ) {
                 $ssurl = $method . ":" . $password . "@" . $address . ":" . $port;
                 $ssqr = "ss://" . base64_encode($ssurl);
-                if ($pointid == $id) {
-                    $answerpoint .= sprintf(
-                        $qr,
-                        $ssqr
-                    );
-                } Elseif ($this->getOption("ss")) {
+                if ($this->getOption("ss")) {
                     $response .= sprintf(
                         $qr,
                         $ssqr
@@ -328,16 +278,6 @@ EOF;
             }
 
             if ($this->getOption("json")) {
-                if ($pointid == $id) {
-                    $answerpoint .= sprintf(
-                        $json_style,
-                        $address,
-                        $port,
-                        $password,
-                        $method,
-                        $note
-                    );
-                } Else {
                     $response .= sprintf(
                         $json_style,
                         $address,
@@ -347,7 +287,6 @@ EOF;
                         $note
                     );
                 }
-            }
 
             if ($this->getOption("file")) {
                 $part .= "\r\n";
@@ -362,16 +301,8 @@ EOF;
                 $part .= ",";
             }
 
-            if ($pointid == $id) {
-                $this->replyWithMessage(array(
-                    "text" => $answerpoint
-                ));
-                usleep(10);
-                $answerpoint = "";
-                break;
-            }
-                if ($this->getOption("file") == false
-                    && $pointid == "" && $this->getOption("allss") == false
+            if ($this->getOption("file") == false
+                && $this->getOption("allss") == false
                 ) {
                     $this->replyWithMessage(array(
                         "text" => $response
@@ -399,8 +330,9 @@ EOF;
                 "text" => $allss
             ));
         }
+
         //汇总用户信息
-        $judge = "";
+        $judge = '';
         if ( $this->getOption("ac") ) $judge .= " ac";
         if ( $this->getOption("ss") ) $judge .= " ss";
         if ( $this->getOption("s") ) $judge .= " s";
@@ -408,9 +340,7 @@ EOF;
         if ( $this->getOption("json") ) $judge .= " json";
         if ( $this->getOption("file") ) $judge .= " file";
         if ( $this->getOption("allss") ) $judge .= " allss";
-        $tid = $this->getUpdate()->getMessage()->getFrom()->getId();
         $tuser = $this->getUpdate()->getMessage()->getFrom()->getUsername();
-
         $this->logger->addInfo( "获取列表：Doge {$user->id}，Name:{$user->user_name},TGID:{$user->telegram_id},tuser: @{$tuser}, 参数: [{$judge}]");
         $this->replyWithMessage(array(
             "text" => "消息发送完毕,频繁获取信息将会被列入黑名单。请谅解!"
