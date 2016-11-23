@@ -307,11 +307,10 @@ EOF;
                     $this->replyWithMessage(array(
                         "text" => $response
                     ));
-                    usleep(10);
                     $response = "";
                 }
 
-        }
+        }  //end
 
         if ($this->getOption("file")){
             $part .= $part_style;
