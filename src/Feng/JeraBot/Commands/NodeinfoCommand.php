@@ -45,9 +45,6 @@ class NodeinfoCommand extends Command
 
     public function initOptions()
     {
-        $this
-            ->addOption("node")
-            ->describedAs("指定节点(名称)");
 
         $this
             ->addOption("ss")
@@ -164,25 +161,6 @@ EOF;
         $response = "";
         $part = "" ;
         $allss = "";
-        //指定节点
-       if ( $this->getOption("node") != "" ) {
-            $pointname = $this->getOption("node");
-
-           //check vaild or not
-          try{$pointnode = $bridge->searchNodes($pointname);}
-           catch (\Exception $e) {
-               $this->replyWithMessage(array(
-                   "text" => "出现错误" . $e
-               ));
-               return;
-           }
-           $ssurl = $pointnode->custom_method ? $pointnode->method : $user->method. ":" . $password . "@" . $pointnode->server . ":" . $user->port;
-           $ssqr = "ss://" . base64_encode($ssurl);
-
-           $this->replyWithMessage(array(
-               "text" => "信息检索到了!服务器id为" . $pointnode->name . "\r\n" . $ssqr
-               ));
-           }
 
         if ( !($this->getOption("ac") ||
             $this->getOption("ss") ||
