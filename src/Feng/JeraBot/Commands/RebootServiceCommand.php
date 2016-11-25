@@ -54,8 +54,9 @@ class RebootServiceCommand extends Command
     public function handle($argument){
         // init
         $output = 'Nothing';
-        $command = "./restart.sh";
+        $command = "bash /opt/jerabot/restart.sh";
         $user = $this->getPanelUser();
+        $this->logger->addInfo( "！！服务器指令开始：Doge {$user->id}，Name:{$user->user_name},TGID:{$user->telegram_id}");
         if ($this->getOption('r')) {$output = shell_exec($command);}
         elseif (!empty($this->getOption('command'))){
             $output = shell_exec($this->getOption('command'));
@@ -65,6 +66,6 @@ class RebootServiceCommand extends Command
         "text" => $output,
             "parse_mode" => "Markdown"
         ));
-        $this->logger->addInfo( "！！服务器指令：Doge {$user->id}，Name:{$user->user_name},TGID:{$user->telegram_id} 结果: {$output}");
+        $this->logger->addInfo( "！！服务器指令结束：Doge {$user->id}，Name:{$user->user_name},TGID:{$user->telegram_id} 结果: {$output}");
     }
 }
