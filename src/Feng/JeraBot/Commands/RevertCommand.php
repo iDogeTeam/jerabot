@@ -94,8 +94,16 @@ class RevertCommand extends Command
             return;
         }
         $response = $this->getOption(0);
-        if ($this->getOption('utf')) $response = $this->utf8_str_to_unicode($this->getOption(0));
-        if ($this->getOption('uni')) $response = $this->unicode_to_utf8($this->getOption(0));
+        try {
+            if ($this->getOption('utf')) $response = $this->utf8_str_to_unicode($this->getOption(0));
+            if ($this->getOption('uni')) $response = $this->unicode_to_utf8($this->getOption(0));
+        }catch (\Exception $e){
+            $this->replyWithMessage(array(
+                "text" => $e,
+                "parse_mode" => "Markdown"
+            ));
+            return;
+        }
         $this->replyWithMessage(array(
             "text" => $response,
             "parse_mode" => "Markdown"
