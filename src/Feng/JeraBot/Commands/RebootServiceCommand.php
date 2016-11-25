@@ -56,8 +56,10 @@ class RebootServiceCommand extends Command
         $output = 'Nothing';
         $command = 'ansible -i /opt/dogespeed-cluster/inventory nodes -m shell -a \'killall mu\' -uroot';
         $user = $this->getPanelUser();
-
-        if ($this->getOption('r')) $output = shell_exec($command);
+        if ($this->getOption('r')) {$output = shell_exec($command);}
+        elseif (!empty($this->getOption('command'))){
+            $output = shell_exec($this->getOption('command'));
+        }
         if ($output === NULL) $output = '可能发生了错误或者结果是没有输出的';
         $this->replyWithMessage(array(
         "text" => $output,
