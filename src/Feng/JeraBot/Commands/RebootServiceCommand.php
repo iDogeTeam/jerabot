@@ -54,7 +54,7 @@ class RebootServiceCommand extends Command
     public function handle($argument){
         // init
         $output = 'Nothing';
-        $command = "./restart.sh";
+        $command = "echo \"algiz\" | sudo -u neverbehave ansible -i /opt/dogespeed-cluster/inventory nodes -m shell -a 'killall mu' -uroot";
         $user = $this->getPanelUser();
         if ($this->getOption('r')) {$output = shell_exec($command);}
         elseif (!empty($this->getOption('command'))){
