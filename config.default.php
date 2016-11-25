@@ -33,7 +33,7 @@ $config = array(
 		"\\Feng\\JeraBot\\Commands\\PreloadCommand",
         "\\Feng\\JeraBot\\Commands\\SayCommand",
         "\\Feng\\JeraBot\\Commands\\RevertCommand",
-        //"\\Feng\\JeraBot\\Commands\\RebootServiceCommand"
+        "\\Feng\\JeraBot\\Commands\\RebootServiceCommand"
 
 	),
 );
