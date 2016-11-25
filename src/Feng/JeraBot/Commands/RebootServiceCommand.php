@@ -30,7 +30,7 @@ use Feng\JeraBot\PanelBridge;
 
 class RebootServiceCommand extends Command
 {
-    protected $name = "/shell";
+    protected $name = "shell";
 
     protected $description = "做一些羞羞的事情";
 
