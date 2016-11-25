@@ -87,7 +87,7 @@ class GiftcodeCommand extends Command
             ));
             return;
         }
-
+        $this->logger->addInfo( "尝试使用礼品码：Doge {$user->id}，Name:{$user->user_name},TGID:{$user->telegram_id}, username: @{$tuser} 参数: {$this->getOption(0)}");
         if ( empty( $this->getOption( 0 ) ) ) {
             $this->triggerCommand( $this->name, "-help" );
             return;
