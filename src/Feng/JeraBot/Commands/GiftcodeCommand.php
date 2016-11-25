@@ -93,16 +93,15 @@ class GiftcodeCommand extends Command
             return;
         }
 
-        $get_code = $this->utf8_str_to_unicode($this->getOption(0));
-
-
-        $code = $bridge->getGiftCode($get_code);
-
+        $code = $bridge->getGiftCode($this->utf8_str_to_unicode($this->getOption(0)));
         if ($code->code == null) {
-            $this->replyWithMessage(array(
-                "text" => "礼品码不存在!"
-            ));
-            return;
+            $code = $bridge->getGiftCode($this->getOption(0));
+            if ($code->code == null) {
+                $this->replyWithMessage(array(
+                    "text" => "礼品码不存在!"
+                ));
+                return;
+            }
         }
 
         $get_date = $code->expire_at;
