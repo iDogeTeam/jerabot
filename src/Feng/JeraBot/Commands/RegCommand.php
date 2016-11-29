@@ -64,8 +64,8 @@ class RegCommand extends Command
         if ($this->getOption("upgrade")) {
             if ($user != false) {
                 if (time() - strtotime($user->reg_date) >= 604800) {
-                    if ($user->type === 1) {
-                        $user->type = 2;
+                    if ($user->user_type == 1) {
+                        $user->user_type = 2;
                         if ($user->save()) {
                             $this->replyWithMessage(array(
                                 "text" => "成功从新用户升级！您现在可以在 /myinfo 查看您的等级 "
