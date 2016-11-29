@@ -60,41 +60,49 @@ class RegCommand extends Command
 
         $bridge = new PanelBridge();
         $tuser = $this->getUpdate()->getMessage()->getFrom()->getUsername();
-        if ( !(false === $user = $this->getPanelUser()) ) {
+        $user = $this->getPanelUser();
+        if ($this->getOption("upgrade")) {
+            if ($user != false) {
+                if (time() - strtotime($user->reg_date) === 604800) {
+                    if ($user->type === 1) {
+                        $user->type = 2;
+                        if ($user->save()) {
+                            $this->replyWithMessage(array(
+                                "text" => "成功从新用户升级！您现在可以在 /myinfo 查看您的等级 "
+                            ));
+                            $this->logger->addInfo("升级：Doge {$user->id} <---> Telegram {$user->telegram_id}, tuser: @{$tuser}");
+                            return;
+                        } else {
+                            $this->replyWithMessage(array(
+                                "text" => "未知错误，请向管理员反馈。"
+                            ));
+                            return;
+                        }
+                    } else {
+                        $this->replyWithMessage(array(
+                            "text" => "别闹了你又不是新人= - =|"
+                        ));
+                        return;
+                    }
+                } else {
+                    $this->replyWithMessage(array(
+                        "text" => "还没到七天呢，别急QWQ"
+                    ));
+                    return;
+                }
+            } else {
+                $this->replyWithMessage(array(
+                    "text" => "你还没注册或绑定账号呢……"
+                ));
+                return;
+            }
+        }
+
+        if ( true === $user ) {
             $this->replyWithMessage(array(
                 "text" => "作弊Hi! 你已经绑定了 Doge 账户呢！"
             ));
             return;
-        }
-
-        if ($this->getOption("upgrade") && $user != false) {
-            if ( time()-strtotime($user->reg_date) === 604800 )
-            {
-                if ( $user->type === 1)
-                {
-                    $user->type = 2;
-                    if ($user->save()){
-                        $this->replyWithMessage(array(
-                            "text" => "成功从新用户升级！您现在可以在 /myinfo 查看您的等级 "
-                        ));
-                    }else{
-                            $this->replyWithMessage(array(
-                                "text" => "未知错误，请向管理员反馈。"
-                            ));
-                    }
-                }else{
-                        $this->replyWithMessage(array(
-                            "text" => "别闹了你又不是新人= - =|"
-                        ));
-                }
-            }else{
-                $this->replyWithMessage(array(
-                    "text" => "还没到七天呢，别急QWQ"
-                ));
-            }
-            $this->logger->addInfo("升级：Doge {$user->id} <---> Telegram {$user->telegram_id}, tuser: @{$tuser}");
-            return;
-
         }
 
         if ( $this->getOption("code") != 666){
