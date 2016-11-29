@@ -63,7 +63,7 @@ class RegCommand extends Command
         $user = $this->getPanelUser();
         if ($this->getOption("upgrade")) {
             if ($user != false) {
-                if (time() - strtotime($user->reg_date) === 604800) {
+                if (time() - strtotime($user->reg_date) >= 604800) {
                     if ($user->type === 1) {
                         $user->type = 2;
                         if ($user->save()) {
