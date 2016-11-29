@@ -69,6 +69,8 @@ class MyinfoCommand extends Command {
 Type: %s
 对应的数字为不同组别.(数字越高等级越高)
 ===
+*用户信息*
+加入时间：%s
 
 EOF;
 		$response = sprintf(
@@ -76,7 +78,8 @@ EOF;
 			$privacy ? "隐藏" : $user->port,
 			$privacy ? "隐藏" : $user->passwd,
 			$user->usedTraffic() . "/" . $user->enableTraffic(),
-			$user->user_type
+			$user->user_type,
+            $user->reg_date
 		);
 		if ( $user->ac_enable ) {
 			$template = <<<EOF
