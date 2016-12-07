@@ -50,7 +50,8 @@ class RebootServiceCommand extends Command
             ->describedAs("坏人！不许看！");
         $this
             ->addOption('reg')
-            ->describedAs("注册开关控制");
+            ->describedAs("注册开关控制")
+            ->boolean();
     }
 
     public function handle($argument){
