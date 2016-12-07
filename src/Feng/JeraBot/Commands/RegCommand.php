@@ -80,7 +80,7 @@ class RegCommand extends Command
                         }
                     } else {
                         $this->replyWithMessage(array(
-                            "text" => "别闹了你又不是新人= - =|"
+                            "text" => "老司机你好= - =|"
                         ));
                         return;
                     }
@@ -92,7 +92,7 @@ class RegCommand extends Command
                 }
             } else {
                 $this->replyWithMessage(array(
-                    "text" => "你还没注册或绑定账号呢……"
+                    "text" => "你还没注册或绑定账号呢…… 试试看 /reg ？"
                 ));
                 return;
             }
@@ -118,12 +118,14 @@ class RegCommand extends Command
             ));
 
             //init
-            $random = $bridge->genRandomChar(32);
+            $random = $bridge->genRandomChar(16);
+            $email = $random;
+            $email .= "@hello.free";
             $port = $bridge->getAvailablePort();
             //start dash!
             $user = $bridge->createUser();
             $user->user_name = $bridge->genRandomChar(6);
-            $user->email = $random . "@hello.free";
+            $user->email = $email;
             $user->pass = $bridge->getHash($random);
             $user->passwd = $bridge->genRandomChar(6);
             $user->port = $port;
