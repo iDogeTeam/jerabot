@@ -98,7 +98,7 @@ class RegCommand extends Command
             }
         }
 
-        if ( $user === true ) {
+        if ( $user == true ) {
             $this->replyWithMessage(array(
                 "text" => "作弊Hi! 你已经绑定了 Doge 账户呢！"
             ));
