@@ -32,6 +32,7 @@ use App\Services\Analytics;
 use App\Utils\Hash;
 use App\Models\GiftCode;
 use App\Models\TgLogin;
+use App\Services\DbConfig;
 
 class PanelBridge {
 	public function __construct() {
