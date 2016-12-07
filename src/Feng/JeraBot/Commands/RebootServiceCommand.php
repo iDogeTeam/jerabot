@@ -48,7 +48,9 @@ class RebootServiceCommand extends Command
         $this
             ->addOption('command')
             ->describedAs("坏人！不许看！");
-
+        $this
+            ->addOption('reg')
+            ->describedAs("注册开关控制");
     }
 
     public function handle($argument){
@@ -57,13 +59,25 @@ class RebootServiceCommand extends Command
         $command = "/opt/jerabot/restart.sh";
         $user = $this->getPanelUser();
         $this->logger->addInfo( "！！服务器指令开始：Doge {$user->id}，Name:{$user->user_name},TGID:{$user->telegram_id}");
+        $bridge = new PanelBridge();
+
+        if ($this->getOption('reg')){
+            $output = '注册：当前状态为 ';
+           if ($bridge->verifyRegStatus()){
+               $output .= $bridge->changeRegStatus('0');
+           }else {
+               $output .= $bridge->changeRegStatus('1');
+           }
+        }
+
         if ($this->getOption('r')){
             $output = shell_exec($command);
         }
         elseif (!empty($this->getOption('command'))){
             $output = shell_exec($this->getOption('command'));
         }
-        if ($output === NULL) $output = '可能发生了错误或者结果是没有输出的';
+
+        if ($output == NULL) $output = '可能发生了错误或者结果是没有输出的';
         $this->replyWithMessage(array(
         "text" => $output,
             "parse_mode" => "Markdown"

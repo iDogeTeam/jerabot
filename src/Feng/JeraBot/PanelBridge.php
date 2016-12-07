@@ -115,6 +115,11 @@ class PanelBridge {
         return DbConfig::get('bot-reg');
     }
 
+    public function changeRegStatus($value){
+        DbConfig::set('bot-reg', $value);
+        return $value;
+    }
+
     public function getAll(){
         return User::all();
     }
