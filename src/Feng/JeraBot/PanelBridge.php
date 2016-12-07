@@ -111,7 +111,7 @@ class PanelBridge {
     }
 
     public function verifyRegStatus(){
-        return Config::where('key', 'bot-reg')->first();
+        return DbConfig::get('bot-reg');
     }
 
     public function getAll(){
