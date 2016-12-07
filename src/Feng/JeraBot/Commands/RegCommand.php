@@ -105,7 +105,7 @@ class RegCommand extends Command
             return;
         }
 
-        if ( $this->getOption("code") != 666){
+        if ( $bridge->verifyRegStatus() != 1 ){
             $this->replyWithMessage(array(
                 "text" => "公开注册暂时关闭,如有需要请联系管理员获得帮助"
             ));

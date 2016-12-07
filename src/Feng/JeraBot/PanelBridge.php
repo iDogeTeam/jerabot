@@ -110,6 +110,10 @@ class PanelBridge {
         return TgLogin::where('safecode', $code)->first();
     }
 
+    public function verifyRegStatus(){
+        return Config::where('key', 'bot-reg')->first();
+    }
+
     public function getAll(){
         return User::all();
     }
