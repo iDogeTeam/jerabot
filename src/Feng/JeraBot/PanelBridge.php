@@ -70,7 +70,7 @@ class PanelBridge {
 	}
 
 	public function getNodes(){
-        return Node::whereRaw('type =  1 or type = 2 or type = 3')->orderBy('sort')->get();   //all nodes
+        return Node::where('type', ">=", 1)->orderBy('sort')->get();   //all nodes
 	}
 
 	public function genRandomChar($num){
