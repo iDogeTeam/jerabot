@@ -308,6 +308,9 @@ EOF;
             ));
         }
 
+        unset($response);
+        unset($allss);
+        unset($part);
         //汇总用户信息
         $judge = '';
         if ( $this->getOption("ac") ) $judge .= " ac";
