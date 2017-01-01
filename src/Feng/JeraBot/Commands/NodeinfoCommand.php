@@ -201,7 +201,7 @@ EOF;
             $note = $node->info;
             $load = $node->getNodeLoad();
             $people = $node->getOnlineUserCount();
-            $traffic = $node->getTrafficFromLogs();
+            $traffic = '功能被暂时停止';
             $time = $node->getNodeUptime();
 
                 $response .= sprintf(  //main
