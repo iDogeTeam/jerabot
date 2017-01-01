@@ -173,5 +173,12 @@ class GiftcodeCommand extends Command
             "parse_mode" => "Markdown"
         ));
         $this->logger->addInfo( "使用礼品码：Doge {$user->id}，Name:{$user->user_name},TGID:{$user->telegram_id}, username: @{$tuser} 参数: {$get_code}");
+        if (!empty($code->info)){
+            $this->replyWithMessage(array(
+                "text" => $code->info,
+                "parse_mode" => "Markdown"
+            ));
+        }
+        return;
     }
-    }
+}
