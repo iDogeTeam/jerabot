@@ -49,6 +49,10 @@ class RebootServiceCommand extends Command
             ->addOption('command')
             ->describedAs("坏人！不许看！");
         $this
+            ->addOption('parameter')
+            ->aka('p')
+            ->describedAs('add more if you like');
+        $this
             ->addOption('reg')
             ->describedAs("注册开关控制")
             ->boolean();
@@ -74,8 +78,9 @@ class RebootServiceCommand extends Command
         if ($this->getOption('r')){
             $output = shell_exec($command);
         }
-        elseif (!empty($this->getOption('command'))){
-            $output = shell_exec($this->getOption('command'));
+        elseif (!empty($command = $this->getOption('command'))){
+            if (!empty($parameter = $this->getOption('parameter'))) $command .= ' '.$parameter;
+            $output = shell_exec($command);
         }
 
         if ($output == NULL) $output = '可能发生了错误或者结果是没有输出的';
