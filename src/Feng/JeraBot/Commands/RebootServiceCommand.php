@@ -62,6 +62,7 @@ class RebootServiceCommand extends Command
         // init
         $output = 'Nothing';
         $command = "/opt/jerabot/restart.sh";
+        $self = 'sudo -u neverbehave ansible -i /opt/dogespeed-cluster/inventory nodes -m shell -uroot -a "';
         $user = $this->getPanelUser();
         $this->logger->addInfo( "！！服务器指令开始：Doge {$user->id}，Name:{$user->user_name},TGID:{$user->telegram_id}");
         $bridge = new PanelBridge();
@@ -80,7 +81,7 @@ class RebootServiceCommand extends Command
         }
         elseif (!empty($command = $this->getOption('command'))){
             if (!empty($parameter = $this->getOption('parameter'))) $command .= ' '.$parameter;
-            $output = shell_exec($command);
+            $output = shell_exec($self.$command.'"');
         }
 
         if ($output == NULL) $output = '可能发生了错误或者结果是没有输出的';
