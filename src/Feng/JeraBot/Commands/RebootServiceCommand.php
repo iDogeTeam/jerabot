@@ -49,9 +49,6 @@ class RebootServiceCommand extends Command
             ->addOption('command')
             ->describedAs("坏人！不许看！");
         $this
-            ->addOption('p')
-            ->describedAs('add more if you like');
-        $this
             ->addOption('reg')
             ->describedAs("注册开关控制")
             ->boolean();
@@ -61,8 +58,7 @@ class RebootServiceCommand extends Command
         // init
         $output = 'Nothing';
         $command = "/opt/jerabot/restart.sh";
-        $parameter = '';
-        $self = 'sudo -u neverbehave ansible -i /opt/dogespeed-cluster/inventory nodes -m shell -uroot -a "';
+        $self = 'sudo -u neverbehave ansible -i /opt/dogespeed-cluster/inventory nodes -m shell -uroot -a ';
         $user = $this->getPanelUser();
         $this->logger->addInfo( "！！服务器指令开始：Doge {$user->id}，Name:{$user->user_name},TGID:{$user->telegram_id}");
         $bridge = new PanelBridge();
@@ -80,18 +76,17 @@ class RebootServiceCommand extends Command
             $output = shell_exec($command);
         }
         elseif (!empty($command = $this->getOption('command'))){
-            $command = $self.$command.' '.$this->getOption('p').'"';
+            $command = $self.$command;
             $this->replyWithMessage(array(
                 "text" => $command,
             ));
             $output = shell_exec($command);
         }
-        $this->logger->addInfo( "！！服务器指令结束：Doge {$user->id}，Name:{$user->user_name},TGID:{$user->telegram_id} 结果: {$output}");
         if ($output == NULL) $output = '可能发生了错误或者结果是没有输出的';
         $this->replyWithMessage(array(
         "text" => $output,
             "parse_mode" => "Markdown"
         ));
-
+        $this->logger->addInfo( "！！服务器指令结束：结果: {$output}");
     }
 }
